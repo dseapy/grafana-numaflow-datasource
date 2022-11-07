@@ -12,10 +12,10 @@ import path from 'path';
 import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
 import { Configuration } from 'webpack';
 
-import { getPackageJson, getPluginId, hasReadme, getEntries } from './utils';
-import { SOURCE_DIR, DIST_DIR } from './constants';
+import { getPackageJson, getPluginId, hasReadme } from './utils';
+import { SOURCE_DIR, DIST_DIR, ENTRY_FILE } from './constants';
 
-const config = async (env): Promise<Configuration> => ({
+const config = (env): Configuration => ({
   cache: {
     type: 'filesystem',
     buildDependencies: {
@@ -27,7 +27,9 @@ const config = async (env): Promise<Configuration> => ({
 
   devtool: env.production ? 'source-map' : 'eval-source-map',
 
-  entry: await getEntries(),
+  entry: {
+    module: path.resolve(process.cwd(), ENTRY_FILE),
+  },
 
   externals: [
     'lodash',
@@ -45,7 +47,6 @@ const config = async (env): Promise<Configuration> => ({
     'react-redux',
     'redux',
     'rxjs',
-    'react-router',
     'react-router-dom',
     'd3',
     'angular',
@@ -60,7 +61,7 @@ const config = async (env): Promise<Configuration> => ({
       const stripPrefix = (request) => request.substr(prefix.length);
 
       if (hasPrefix(request)) {
-        return callback(undefined, stripPrefix(request));
+        return callback(null, stripPrefix(request));
       }
 
       callback();
@@ -92,45 +93,34 @@ const config = async (env): Promise<Configuration> => ({
         },
       },
       {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      },
-      {
-        exclude: /(node_modules)/,
-        test: /\.s[ac]ss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-      },
-      {
         test: /\.(png|jpe?g|gif|svg)$/,
-        type: 'asset/resource',
-        generator: {
-          // Keep publicPath relative for host.com/grafana/ deployments
-          publicPath: `public/plugins/${getPluginId()}/img/`,
-          outputPath: 'img/',
-          filename: Boolean(env.production) ? '[hash][ext]' : '[name][ext]',
-        },
+        use: [
+          {
+            loader: 'asset/resource',
+            options: {
+              outputPath: '/',
+              name: Boolean(env.production) ? '[path][hash].[ext]' : '[path][name].[ext]',
+            },
+          },
+        ],
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)(\?v=\d+\.\d+\.\d+)?$/,
-        type: 'asset/resource',
-        generator: {
+        loader: 'asset/resource',
+        options: {
           // Keep publicPath relative for host.com/grafana/ deployments
           publicPath: `public/plugins/${getPluginId()}/fonts`,
-          outputPath: 'fonts/',
-          filename: Boolean(env.production) ? '[hash][ext]' : '[name][ext]',
+          outputPath: 'fonts',
+          name: Boolean(env.production) ? '[hash].[ext]' : '[name].[ext]',
         },
       },
     ],
   },
 
   output: {
-    clean: {
-      keep: /gpx_.*/,
-    },
+    clean: true,
     filename: '[name].js',
-    library: {
-      type: 'amd',
-    },
+    libraryTarget: 'amd',
     path: path.resolve(process.cwd(), DIST_DIR),
     publicPath: '/',
   },
@@ -190,8 +180,6 @@ const config = async (env): Promise<Configuration> => ({
 
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    // handle resolving "rootDir" paths
-    modules: [path.resolve(process.cwd(), 'src'), 'node_modules'],
     unsafeCache: true,
   },
 });

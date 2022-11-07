@@ -1,51 +1,68 @@
-# Backend HTTP API data source
+# Grafana Data Source Plugin Template
 
-This example queries data from an HTTP API.
+[![Build](https://github.com/grafana/grafana-starter-datasource/workflows/CI/badge.svg)](https://github.com/grafana/grafana-starter-datasource/actions?query=workflow%3A%22CI%22)
 
-This differs from datasource-http, because the data fetching happens on the backend.
+This template is a starting point for building Grafana Data Source Plugins
 
-This allows to use the data source for alerting as well.
+## What is Grafana Data Source Plugin?
 
-## External service
+Grafana supports a wide range of data sources, including Prometheus, MySQL, and even Datadog. There’s a good chance you can already visualize metrics from the systems you have set up. In some cases, though, you already have an in-house metrics solution that you’d like to add to your Grafana dashboards. Grafana Data Source Plugins enables integrating such solutions with Grafana.
 
-The plugin expects the following JSON from a remote HTTP API:
+## Getting started
 
-```
-{
-  "datapoints": [
-    {"time": "2009-11-10T23:00:00Z", "value": x},
-    ...
-  ]
-}
-```
-
-An example HTTP server that returns dummy data in this format is included in `cmd/server`.
-
-## Building
+A data source backend plugin consists of both frontend and backend components.
 
 ### Frontend
 
-```bash
-$ yarn install
-$ yarn build
-```
+1. Install dependencies
+
+   ```bash
+   yarn install
+   ```
+
+2. Build plugin in development mode or run in watch mode
+
+   ```bash
+   yarn dev
+   ```
+
+   or
+
+   ```bash
+   yarn watch
+   ```
+
+3. Build plugin in production mode
+
+   ```bash
+   yarn build
+   ```
 
 ### Backend
 
-```bash
-$ mage -v
-```
+1. Update [Grafana plugin SDK for Go](https://grafana.com/docs/grafana/latest/developers/plugins/backend/grafana-plugin-sdk-for-go/) dependency to the latest minor version:
 
-### Example server
+   ```bash
+   go get -u github.com/grafana/grafana-plugin-sdk-go
+   go mod tidy
+   ```
 
-```bash
-$ mage server
-$ ./cmd/server/server :10000
-2022/10/28 15:43:16 listening on :10000
-```
+2. Build backend plugin binaries for Linux, Windows and Darwin:
 
-Then, add a new data source in Grafana and use the following url:
+   ```bash
+   mage -v
+   ```
 
-```
-http://127.0.0.1:10000/metrics
-```
+3. List all available Mage targets for additional commands:
+
+   ```bash
+   mage -l
+   ```
+
+
+## Learn more
+
+- [Build a data source plugin tutorial](https://grafana.com/tutorials/build-a-data-source-plugin)
+- [Grafana documentation](https://grafana.com/docs/)
+- [Grafana Tutorials](https://grafana.com/tutorials/) - Grafana Tutorials are step-by-step guides that help you make the most of Grafana
+- [Grafana UI Library](https://developers.grafana.com/ui) - UI components to help you build interfaces using Grafana Design System

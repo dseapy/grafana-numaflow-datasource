@@ -1,10 +1,20 @@
-import { DataSourceInstanceSettings } from '@grafana/data';
+import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
+import type { DataSourceInstanceSettings, ScopedVars } from '@grafana/data';
+import type { BasicQuery, BasicDataSourceOptions, QueryTypesResponse } from './types';
 
-import { MyQuery, MyDataSourceOptions } from './types';
-import { DataSourceWithBackend } from '@grafana/runtime';
-
-export class DataSource extends DataSourceWithBackend<MyQuery, MyDataSourceOptions> {
-  constructor(instanceSettings: DataSourceInstanceSettings<MyDataSourceOptions>) {
+export class BasicDataSource extends DataSourceWithBackend<BasicQuery, BasicDataSourceOptions> {
+  constructor(instanceSettings: DataSourceInstanceSettings<BasicDataSourceOptions>) {
     super(instanceSettings);
+  }
+
+  applyTemplateVariables(query: BasicQuery, scopedVars: ScopedVars): Record<string, any> {
+    return {
+      ...query,
+      rawQuery: getTemplateSrv().replace(query.rawQuery, scopedVars),
+    };
+  }
+
+  getAvailableQueryTypes(): Promise<QueryTypesResponse> {
+    return this.getResource('/query-types');
   }
 }

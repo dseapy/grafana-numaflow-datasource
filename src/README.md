@@ -1,5 +1,5 @@
 <!-- This README file is going to be the one displayed on the Grafana.com website for your plugin -->
 
-# Datasource Http Backend
+# Basic Datasource
 
-
+Showcase how to build a basic datasource plugin

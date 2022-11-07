@@ -25,11 +25,13 @@ artifacts/
 work/
 ci/
 e2e-results/
-**/cypress/videos
-**/cypress/report.json 
 
 # Editor
 .idea
-*.iml
+.vscode
 
 .eslintcache
+
+# Cypress
+cypress/report.json
+cypress/videos
