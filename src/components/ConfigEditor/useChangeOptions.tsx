@@ -1,10 +1,10 @@
 import { ChangeEvent, useCallback } from 'react';
-import type { BasicDataSourceOptions } from 'types';
+import type { NumaflowDataSourceOptions } from 'types';
 import type { EditorProps } from './types';
 
 type OnChangeType = (event: ChangeEvent<HTMLInputElement>) => void;
 
-export function useChangeOptions(props: EditorProps, propertyName: keyof BasicDataSourceOptions): OnChangeType {
+export function useChangeOptions(props: EditorProps, propertyName: keyof NumaflowDataSourceOptions): OnChangeType {
   const { onOptionsChange, options } = props;
 
   return useCallback(

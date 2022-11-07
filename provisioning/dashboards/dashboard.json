@@ -97,7 +97,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "grafana-basic-datasource",
+            "type": "grafana-numaflow-datasource",
             "uid": "U9sW5bank"
           },
           "queryType": "TimeSeries",
@@ -110,7 +110,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-basic-datasource",
+        "type": "grafana-numaflow-datasource",
         "uid": "U9sW5bank"
       },
       "fieldConfig": {
@@ -184,7 +184,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "grafana-basic-datasource",
+            "type": "grafana-numaflow-datasource",
             "uid": "U9sW5bank"
           },
           "queryType": "Table",
@@ -239,7 +239,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Basic datasource example",
+  "title": "Numaflow datasource example",
   "uid": "lYi_st-7z",
   "version": 1,
   "weekStart": ""

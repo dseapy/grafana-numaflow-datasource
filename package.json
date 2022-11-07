@@ -1,7 +1,7 @@
 {
-  "name": "basic-datasource",
+  "name": "numaflow-datasource",
   "version": "1.0.0",
-  "description": "Showcase how to build a basic datasource plugin",
+  "description": "Grafana datasource plugin for Numaflow",
   "scripts": {
     "build": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -c ./.config/webpack/webpack.config.ts --env production",
     "dev": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -w -c ./.config/webpack/webpack.config.ts --env development",

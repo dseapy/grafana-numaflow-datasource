@@ -1,15 +1,16 @@
 {
-  "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
-  "name": "Basic Datasource",
-  "id": "grafana-basic-datasource",
+  "name": "Numaflow Datasource",
+  "id": "grafana-numaflow-datasource",
   "metrics": true,
   "backend": true,
-  "executable": "gpx_basic_datasource",
+  "alerting": true,
+  "executable": "gpx_numaflow_datasource",
   "info": {
-    "description": "Showcase how to build a basic datasource plugin",
+    "description": "Datasource plugin for Numaflow",
     "author": {
-      "name": "Your Name"
+      "name": "David Seapy"
     },
     "keywords": ["datasource"],
     "logos": {
@@ -19,11 +20,11 @@
     "links": [
       {
         "name": "Website",
-        "url": "https://github.com/grafana/grafana-starter-datasource"
+        "url": "https://github.com/dseapy/grafana-numaflow-datasource"
       },
       {
         "name": "License",
-        "url": "https://github.com/grafana/grafana-starter-datasource/blob/master/LICENSE"
+        "url": "https://github.com/dseapy/grafana-numaflow-datasource/blob/main/LICENSE"
       }
     ],
     "screenshots": [],

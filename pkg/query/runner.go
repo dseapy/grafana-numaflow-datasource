@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/grafana/basic-datasource/pkg/models"
-	"github.com/grafana/basic-datasource/pkg/query/scenario"
+	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
+	"github.com/dseapy/grafana-numaflow-datasource/pkg/query/scenario"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )

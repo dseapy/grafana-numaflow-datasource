@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
-import type { BasicSecureJsonData } from 'types';
+import type { NumaflowSecureJsonData } from 'types';
 import type { EditorProps } from './types';
 
 type OnChangeType = () => void;
 
-export function useResetSecureOptions(props: EditorProps, propertyName: keyof BasicSecureJsonData): OnChangeType {
+export function useResetSecureOptions(props: EditorProps, propertyName: keyof NumaflowSecureJsonData): OnChangeType {
   const { onOptionsChange, options } = props;
 
   return useCallback(() => {

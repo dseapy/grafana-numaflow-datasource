@@ -1,8 +1,8 @@
 import type { QueryEditorProps } from '@grafana/data';
-import type { BasicDataSource } from 'datasource';
-import type { BasicDataSourceOptions, BasicQuery } from '../../types';
+import type { NumaflowDataSource } from 'datasource';
+import type { NumaflowDataSourceOptions, NumaflowQuery } from '../../types';
 
-export type EditorProps = QueryEditorProps<BasicDataSource, BasicQuery, BasicDataSourceOptions>;
+export type EditorProps = QueryEditorProps<NumaflowDataSource, NumaflowQuery, NumaflowDataSourceOptions>;
 
 export type ChangeOptions<T> = {
   propertyName: keyof T;

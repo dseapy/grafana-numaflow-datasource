@@ -1,6 +1,6 @@
 import { useAsync } from 'react-use';
 import type { SelectableValue } from '@grafana/data';
-import type { BasicDataSource } from '../../datasource';
+import type { NumaflowDataSource } from '../../datasource';
 
 type AsyncQueryTypeState = {
   loading: boolean;
@@ -8,7 +8,7 @@ type AsyncQueryTypeState = {
   error: Error | undefined;
 };
 
-export function useQueryTypes(datasource: BasicDataSource): AsyncQueryTypeState {
+export function useQueryTypes(datasource: NumaflowDataSource): AsyncQueryTypeState {
   const result = useAsync(async () => {
     const { queryTypes } = await datasource.getAvailableQueryTypes();
 

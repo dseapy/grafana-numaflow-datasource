@@ -3,8 +3,8 @@ package plugin
 import (
 	"context"
 
-	"github.com/grafana/basic-datasource/pkg/models"
-	"github.com/grafana/basic-datasource/pkg/query"
+	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
+	"github.com/dseapy/grafana-numaflow-datasource/pkg/query"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"

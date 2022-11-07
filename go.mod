@@ -1,4 +1,4 @@
-module github.com/grafana/basic-datasource
+module github.com/dseapy/grafana-numaflow-datasource
 
 go 1.17
 
