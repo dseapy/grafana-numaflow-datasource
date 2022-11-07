@@ -7,7 +7,7 @@ import (
 
 // Example on how you can structure data frames when returning time
 // series data.
-func newTimeSeriesFrame(query backend.DataQuery) *data.Frame {
+func newTimeSeriesFrames(query backend.DataQuery) data.Frames {
 	temperatures := []int64{25, 22, 19, 23, 22, 22, 18, 26, 24, 20}
 	timestamps := timeStampsBetween(query.TimeRange, len(temperatures))
 
@@ -16,5 +16,5 @@ func newTimeSeriesFrame(query backend.DataQuery) *data.Frame {
 		data.NewField("values", nil, temperatures),
 	}
 
-	return data.NewFrame("temperatures", fields...)
+	return data.Frames{data.NewFrame("temperatures", fields...)}
 }

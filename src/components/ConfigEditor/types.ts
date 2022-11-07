@@ -1,4 +1,4 @@
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import type { NumaflowDataSourceOptions, NumaflowSecureJsonData } from '../../types';
+import type { NumaflowDataSourceOptions } from '../../types';
 
-export type EditorProps = DataSourcePluginOptionsEditorProps<NumaflowDataSourceOptions, NumaflowSecureJsonData>;
+export type EditorProps = DataSourcePluginOptionsEditorProps<NumaflowDataSourceOptions>;

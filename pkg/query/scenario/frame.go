@@ -5,12 +5,14 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
-func NewDataFrame(query backend.DataQuery) *data.Frame {
+func NewDataFrames(query backend.DataQuery) data.Frames {
 	switch query.QueryType {
 	case TimeSeries:
-		return newTimeSeriesFrame(query)
+		return newTimeSeriesFrames(query)
 	case Table:
-		return newTableFrame(query)
+		return newTableFrames(query)
+	case NodeGraph:
+		return newNodeGraphFrames()
 	}
 
 	return nil
