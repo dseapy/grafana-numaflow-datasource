@@ -6,6 +6,8 @@ import (
 
 // Example on how you can structure data frames when returning node graph data.
 func newNodeGraphFrames() data.Frames {
+	arcFooConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "green"}}
+	arcBarConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "red"}}
 	nodeFields := []*data.Field{
 		// required
 		data.NewField("id", nil, []string{"my-node-id1", "my-node-id2", "my-node-id3"}),
@@ -14,8 +16,8 @@ func newNodeGraphFrames() data.Frames {
 		data.NewField("subtitle", nil, []string{"my-node-subtitle1", "my-node-subtitle2", ""}),
 		data.NewField("mainstat", nil, []string{"my-node-mainstat1", "my-node-mainstat2", ""}),
 		data.NewField("secondarystat", nil, []string{"my-node-secondarystat1", "my-node-secondarystat2", ""}),
-		data.NewField("arc__foo", nil, []float32{0.3, 0.5, 1.0}),
-		data.NewField("arc__bar", nil, []float32{0.7, 0.5, 1.0}),
+		data.NewField("arc__foo", nil, []float32{0.3, 0.5, 1.0}).SetConfig(arcFooConfig),
+		data.NewField("arc__bar", nil, []float32{0.7, 0.5, 0.0}).SetConfig(arcBarConfig),
 		data.NewField("detail__zed", nil, []string{"my-node-detail-zed1", "my-node-detail-zed2", ""}),
 	}
 	nodesFrame := data.NewFrame("nodes", nodeFields...)
