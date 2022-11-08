@@ -2,4 +2,4 @@
 
 # Numaflow Datasource
 
-Showcase how to build a numaflow datasource plugin
+Datasource plugin for Numaflow

@@ -1,48 +1,20 @@
-# Grafana Data Source Plugin Template
+# Grafana Data Source Plugin for Numaflow
 
-## Frontend
+[Grafana data source plugin](https://grafana.com/tutorials/build-a-data-source-plugin/) for [Numaflow](https://github.com/numaproj/numaflow). 
 
-1. Install dependencies
+* Use [Prometheus data source](https://grafana.com/docs/grafana/latest/datasources/prometheus/) for the time-series metrics. See Numaflow's [metrics.md](https://github.com/numaproj/numaflow/blob/main/docs/metrics/metrics.md).
 
-   ```bash
-   yarn install
-   ```
+* Use a Grafana logging data source (i.e. [Loki](https://grafana.com/docs/grafana/latest/datasources/loki/), [ElasticSearch](https://grafana.com/docs/grafana/latest/datasources/elasticsearch/)) for the container logs.
 
-2. Build plugin in development mode or run in watch mode
+* Use this data source for metadata in Kubernetes/Numaflow that isn't easily collected from existing grafana data sources.
+An example is `edge` & `vertex` metadata for a [node graph panel](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/node-graph/).
 
-   ```bash
-   yarn dev
-   ```
+**Disclaimers**:
+* Grafana's node graph panel is in beta
+* Plugin relies on Numaflow APIs that may change
+* Not an official plugin, not affiliated with numaflow, no support guarantees :)
 
-   or
+## Resources
 
-   ```bash
-   yarn watch
-   ```
-
-3. Build plugin in production mode
-
-   ```bash
-   yarn build
-   ```
-
-## Backend
-
-1. Update [Grafana plugin SDK for Go](https://grafana.com/docs/grafana/latest/developers/plugins/backend/grafana-plugin-sdk-for-go/) dependency to the latest minor version:
-
-   ```bash
-   go get -u github.com/grafana/grafana-plugin-sdk-go
-   go mod tidy
-   ```
-
-2. Build backend plugin binaries for Linux, Windows and Darwin:
-
-   ```bash
-   mage -v
-   ```
-
-3. List all available Mage targets for additional commands:
-
-   ```bash
-   mage -l
-   ```
+- [QUICK_START](docs/quick-start.md)
+- [DEVELOPMENT](docs/development.md)
