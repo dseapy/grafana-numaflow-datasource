@@ -1,6 +1,5 @@
 package models
 
 type QueryModel struct {
-	RawQuery      string `json:"rawQuery"`
-	RunnableQuery string `json:"-"`
+	RawQuery string `json:"rawQuery"`
 }
