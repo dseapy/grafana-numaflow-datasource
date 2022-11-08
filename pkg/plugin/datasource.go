@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"context"
-
 	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
 	"github.com/dseapy/grafana-numaflow-datasource/pkg/query"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -27,6 +26,7 @@ var (
 type Datasource struct {
 	backend.CallResourceHandler
 	settings *models.PluginSettings
+	*nfClients
 }
 
 // NewDatasource creates a new datasource instance.
@@ -36,9 +36,14 @@ func NewDatasource(dis backend.DataSourceInstanceSettings) (instancemgmt.Instanc
 		return nil, err
 	}
 
+	nfClients, err := NewNFClients()
+	if err != nil {
+		panic(err)
+	}
 	return &Datasource{
 		CallResourceHandler: newResourceHandler(),
 		settings:            settings,
+		nfClients:           nfClients,
 	}, nil
 }
 

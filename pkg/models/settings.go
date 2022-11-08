@@ -8,27 +8,25 @@ import (
 )
 
 type PluginSettings struct {
-	DefaultTimeField string                `json:"defaultTimeField"`
-	Secrets          *SecretPluginSettings `json:"-"`
+	DefaultNamespaced bool   `json:"namespaced"`
+	DefaultNamespace  string `json:"namespace"`
 }
 
-type SecretPluginSettings struct {
-	ApiKey string
-}
-
-const defaultTimeField = "time"
+const defaultNamespaced = false
+const defaultNamespace = "default"
 
 func LoadPluginSettings(source backend.DataSourceInstanceSettings) (*PluginSettings, error) {
 	if source.JSONData == nil || len(source.JSONData) < 1 {
 		// If no settings have been saved return default values
 		return &PluginSettings{
-			DefaultTimeField: defaultTimeField,
-			Secrets:          loadSecretPluginSettings(source.DecryptedSecureJSONData),
+			DefaultNamespaced: defaultNamespaced,
+			DefaultNamespace:  defaultNamespace,
 		}, nil
 	}
 
 	settings := PluginSettings{
-		DefaultTimeField: defaultTimeField,
+		DefaultNamespaced: defaultNamespaced,
+		DefaultNamespace:  defaultNamespace,
 	}
 
 	err := json.Unmarshal(source.JSONData, &settings)
@@ -36,13 +34,5 @@ func LoadPluginSettings(source backend.DataSourceInstanceSettings) (*PluginSetti
 		return nil, fmt.Errorf("could not unmarshal PluginSettings json: %w", err)
 	}
 
-	settings.Secrets = loadSecretPluginSettings(source.DecryptedSecureJSONData)
-
 	return &settings, nil
-}
-
-func loadSecretPluginSettings(source map[string]string) *SecretPluginSettings {
-	return &SecretPluginSettings{
-		ApiKey: source["apiKey"],
-	}
 }

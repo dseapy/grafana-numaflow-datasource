@@ -10,7 +10,8 @@ An example is Pipeline `edge` & `vertex` metadata for a [node graph panel](https
 **Disclaimers**:
 * Grafana's node graph panel is in beta
 * Plugin currently depends on core numaflow code to handle queries to `daemon` and `kubernetes`.
-Consider removing this dependency and depending on [numaflow-clients](https://github.com/numaproj/numaflow-clients) once it's implemented.
+Consider removing this dependency and depending on official [numaflow-clients](https://github.com/numaproj/numaflow-clients) once it's implemented.
+Currently, openapi spec exists for kubernetes resources, but not the `daemon`.
 * Not an official plugin, not affiliated with numaflow, no support guarantees :)
 
 ## Resources
