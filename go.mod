@@ -1,8 +1,8 @@
 module github.com/dseapy/grafana-numaflow-datasource
 
-go 1.17
+go 1.19
 
-require github.com/grafana/grafana-plugin-sdk-go v0.134.0
+require github.com/grafana/grafana-plugin-sdk-go v0.142.0
 
 require (
 	github.com/apache/arrow/go/arrow v0.0.0-20211112161151-bc219186db40 // indirect
