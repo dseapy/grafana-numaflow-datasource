@@ -11,9 +11,16 @@ type QueryModel struct {
 	RunnableQuery RunnableQuery `json:"-"`
 }
 
+type NumaflowResourceType string
+
 const (
 	// ResourceAll is an argument used to request all resources of a particular resource type
 	ResourceAll string = "*"
+
+	NamespaceResourceType NumaflowResourceType = "namespace"
+	PipelineResourceType  NumaflowResourceType = "pipeline"
+	VertexResourceType    NumaflowResourceType = "vertex"
+	IsbsvcResourceType    NumaflowResourceType = "isbsvc"
 )
 
 /*
@@ -33,10 +40,11 @@ For all isbsvc: {"isbsvc":"*"}
 For a single isbsvc: {"isbsvc":"my-isbsvc"}
 */
 type RunnableQuery struct {
-	Namespace              string `json:"namespace,omitempty"`
-	Pipeline               string `json:"pipeline,omitempty"`
-	Vertex                 string `json:"vertex,omitempty"`
-	InterStepBufferService string `json:"isbsvc,omitempty"`
+	Namespace              string               `json:"namespace,omitempty"`
+	Pipeline               string               `json:"pipeline,omitempty"`
+	Vertex                 string               `json:"vertex,omitempty"`
+	InterStepBufferService string               `json:"isbsvc,omitempty"`
+	ResourceType           NumaflowResourceType `json:"-"`
 }
 
 func (qm *QueryModel) Unmarshall(b []byte, settings PluginSettings) error {
@@ -54,14 +62,17 @@ func (qm *QueryModel) Unmarshall(b []byte, settings PluginSettings) error {
 	resourceName := ""
 	if qm.RunnableQuery.Pipeline != "" {
 		resourceName = qm.RunnableQuery.Pipeline
+		qm.RunnableQuery.ResourceType = PipelineResourceType
 		numResourcesSpecified++
 	}
 	if qm.RunnableQuery.Vertex != "" {
 		resourceName = qm.RunnableQuery.Vertex
+		qm.RunnableQuery.ResourceType = VertexResourceType
 		numResourcesSpecified++
 	}
 	if qm.RunnableQuery.InterStepBufferService != "" {
 		resourceName = qm.RunnableQuery.InterStepBufferService
+		qm.RunnableQuery.ResourceType = IsbsvcResourceType
 		numResourcesSpecified++
 	}
 	if numResourcesSpecified != 1 {

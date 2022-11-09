@@ -79,9 +79,43 @@ func (ds *Datasource) GetPipeline(ns, pipeline string) (*dfv1.Pipeline, error) {
 	return pl, nil
 }
 
-// ListNamespaces is used to provide all the namespaces that have numaflow pipelines running
-func (ds *Datasource) ListNamespaces(ns string) ([]string, error) {
+// ListNamespacesWithPipelines is used to provide all the namespaces that have numaflow pipelines running
+func (ds *Datasource) ListNamespacesWithPipelines(ns string) ([]string, error) {
 	l, err := ds.numaflowClient.Pipelines(ns).List(context.Background(), metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[string]bool)
+	for _, pl := range l.Items {
+		m[pl.Namespace] = true
+	}
+	namespaces := []string{}
+	for k := range m {
+		namespaces = append(namespaces, k)
+	}
+	return namespaces, nil
+}
+
+// ListNamespacesWithVertices is used to provide all the namespaces that have numaflow pipelines running
+func (ds *Datasource) ListNamespacesWithVertices(ns string) ([]string, error) {
+	l, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[string]bool)
+	for _, pl := range l.Items {
+		m[pl.Namespace] = true
+	}
+	namespaces := []string{}
+	for k := range m {
+		namespaces = append(namespaces, k)
+	}
+	return namespaces, nil
+}
+
+// ListNamespacesWithInterStepBufferServices is used to provide all the namespaces that have numaflow pipelines running
+func (ds *Datasource) ListNamespacesWithInterStepBufferServices(ns string) ([]string, error) {
+	l, err := ds.numaflowClient.InterStepBufferServices(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}

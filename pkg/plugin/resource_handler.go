@@ -51,17 +51,47 @@ func (d *Datasource) CallResource(_ context.Context, req *backend.CallResourceRe
 				Body:   []byte("could not unmarshal query JSON"),
 			})
 		}
-		namespacesWithPipelines, err := d.ListNamespaces(d.settings.Namespace)
-		if err != nil {
-			backend.Logger.Error("error listing namespaces with pipelines", "err", err)
+
+		metricNames := &metricNamesResponse{}
+		switch qm.RunnableQuery.ResourceType {
+		case models.PipelineResourceType:
+			namespacesWithPipelines, err := d.ListNamespacesWithPipelines(d.settings.Namespace)
+			if err != nil {
+				backend.Logger.Error("error listing namespaces with pipelines", "err", err)
+				return sender.Send(&backend.CallResourceResponse{
+					Status: http.StatusInternalServerError,
+					Body:   []byte("error listing namespaces with pipelines"),
+				})
+			}
+			metricNames.MetricNames = namespacesWithPipelines
+		case models.VertexResourceType:
+			namespacesWithVertices, err := d.ListNamespacesWithVertices(d.settings.Namespace)
+			if err != nil {
+				backend.Logger.Error("error listing namespaces with vertices", "err", err)
+				return sender.Send(&backend.CallResourceResponse{
+					Status: http.StatusInternalServerError,
+					Body:   []byte("error listing namespaces with vertices"),
+				})
+			}
+			metricNames.MetricNames = namespacesWithVertices
+		case models.IsbsvcResourceType:
+			namespacesWithInterStepBufferServices, err := d.ListNamespacesWithInterStepBufferServices(d.settings.Namespace)
+			if err != nil {
+				backend.Logger.Error("error listing namespaces with isbsvc", "err", err)
+				return sender.Send(&backend.CallResourceResponse{
+					Status: http.StatusInternalServerError,
+					Body:   []byte("error listing namespaces with isbsvc"),
+				})
+			}
+			metricNames.MetricNames = namespacesWithInterStepBufferServices
+		default:
+			backend.Logger.Error("unknown resource type, this shouldn't ever happen", "resourceType", qm.RunnableQuery.ResourceType)
 			return sender.Send(&backend.CallResourceResponse{
 				Status: http.StatusInternalServerError,
-				Body:   []byte("error listing namespaces with pipelines"),
+				Body:   []byte("error listing namespaces, resource type unknown"),
 			})
 		}
-		metricNames := &metricNamesResponse{
-			MetricNames: namespacesWithPipelines,
-		}
+
 		j, err := json.Marshal(metricNames)
 		if err != nil {
 			backend.Logger.Error("could not marshal metricNames JSON", "err", err)
