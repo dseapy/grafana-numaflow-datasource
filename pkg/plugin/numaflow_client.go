@@ -131,16 +131,12 @@ func (ds *Datasource) ListNamespacesWithInterStepBufferServices(ns string) ([]st
 }
 
 // ListInterStepBufferServices is used to provide all the interstepbuffer services in a namespace
-func (ds *Datasource) ListInterStepBufferServices(limit, ns, cont string) ([]dfv1.InterStepBufferService, error) {
-	lmt, _ := strconv.ParseInt(limit, 10, 64)
-	isbSvcs, err := ds.numaflowClient.InterStepBufferServices(ns).List(context.Background(), metav1.ListOptions{
-		Limit:    lmt,
-		Continue: cont,
-	})
+func (ds *Datasource) ListInterStepBufferServices(ns string) ([]dfv1.InterStepBufferService, error) {
+	isbsvcList, err := ds.numaflowClient.InterStepBufferServices(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
-	return isbSvcs.Items, nil
+	return isbsvcList.Items, nil
 }
 
 // GetInterStepBufferService is used to provide the spec of the interstep buffer service
@@ -153,7 +149,16 @@ func (ds *Datasource) GetInterStepBufferService(ns, isbsvc string) (*dfv1.InterS
 }
 
 // ListVertices is used to provide all the vertices of a pipeline
-func (ds *Datasource) ListVertices(limit, ns, pipeline, cont string) ([]dfv1.Vertex, error) {
+func (ds *Datasource) ListVertices(ns string) ([]dfv1.Vertex, error) {
+	vertexList, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return vertexList.Items, nil
+}
+
+// ListPipelineVertices is used to provide all the vertices of a pipeline
+func (ds *Datasource) ListPipelineVertices(limit, ns, pipeline, cont string) ([]dfv1.Vertex, error) {
 	lmt, _ := strconv.ParseInt(limit, 10, 64)
 	vertices, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s", dfv1.KeyPipelineName, pipeline),
