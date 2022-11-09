@@ -1,6 +1,6 @@
 export const testIds = {
   configEditor: {
+    namespaced: 'data-testid ce-namespaced',
     namespace: 'data-testid ce-namespace',
-    apiKey: 'data-testid ce-api-key',
   },
 };

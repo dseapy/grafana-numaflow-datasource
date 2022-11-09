@@ -7,7 +7,10 @@ export interface NumaflowQuery extends DataQuery {
 /**
  * These are options configured for each DataSource instance
  */
-export interface NumaflowDataSourceOptions extends DataSourceJsonData {}
+export interface NumaflowDataSourceOptions extends DataSourceJsonData {
+  namespaced?: boolean;
+  namespace?: string;
+}
 
 /**
  * Value that is used in the backend, but never sent over HTTP to the frontend

@@ -20,3 +20,4 @@ export function useChangeOptions(props: EditorProps, propertyName: keyof Numaflo
     [onOptionsChange, options, propertyName]
   );
 }
+
