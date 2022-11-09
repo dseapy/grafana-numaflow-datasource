@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
-import type { NumaflowQuery } from '../../types';
+import type { NumaflowDataQuery } from '../../types';
 import type { ChangeOptions, EditorProps } from './types';
 
 type OnChangeType = (value: string) => void;
 
-export function useChangeString(props: EditorProps, options: ChangeOptions<NumaflowQuery>): OnChangeType {
+export function useChangeString(props: EditorProps, options: ChangeOptions<NumaflowDataQuery>): OnChangeType {
   const { onChange, onRunQuery, query } = props;
   const { propertyName, runQuery } = options;
 

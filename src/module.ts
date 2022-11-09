@@ -1,8 +1,10 @@
 import { DataSourcePlugin } from '@grafana/data';
 import { NumaflowDataSource } from './datasource';
-import type { NumaflowQuery, NumaflowDataSourceOptions } from './types';
+import type { NumaflowDataQuery, NumaflowDataSourceOptions } from './types';
 import { ConfigEditor, QueryEditor } from './components';
+import {VariableQueryEditor} from "./components/QueryEditor/VariableQueryEditor";
 
-export const plugin = new DataSourcePlugin<NumaflowDataSource, NumaflowQuery, NumaflowDataSourceOptions>(NumaflowDataSource)
+export const plugin = new DataSourcePlugin<NumaflowDataSource, NumaflowDataQuery, NumaflowDataSourceOptions>(NumaflowDataSource)
   .setConfigEditor(ConfigEditor)
-  .setQueryEditor(QueryEditor);
+  .setQueryEditor(QueryEditor)
+  .setVariableQueryEditor(VariableQueryEditor);

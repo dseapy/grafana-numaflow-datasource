@@ -24,7 +24,6 @@ var (
 // Datasource is an example datasource which can respond to data queries, reports
 // its health and has streaming skills.
 type Datasource struct {
-	backend.CallResourceHandler
 	settings *models.PluginSettings
 	*nfClients
 }
@@ -41,9 +40,8 @@ func NewDatasource(dis backend.DataSourceInstanceSettings) (instancemgmt.Instanc
 		panic(err)
 	}
 	return &Datasource{
-		CallResourceHandler: newResourceHandler(),
-		settings:            settings,
-		nfClients:           nfClients,
+		settings:  settings,
+		nfClients: nfClients,
 	}, nil
 }
 

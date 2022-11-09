@@ -1,21 +1,18 @@
 import type { DataQuery, DataSourceJsonData } from '@grafana/data';
 
-export interface NumaflowQuery extends DataQuery {
+export interface NumaflowDataQuery extends DataQuery {
   rawQuery: string;
 }
 
-/**
- * These are options configured for each DataSource instance
- */
 export interface NumaflowDataSourceOptions extends DataSourceJsonData {
   namespaced?: boolean;
   namespace?: string;
 }
 
-/**
- * Value that is used in the backend, but never sent over HTTP to the frontend
- */
-
 export type QueryTypesResponse = {
   queryTypes: string[];
+};
+
+export type MetricNamesResponse = {
+  metricNames: string[];
 };

@@ -1,49 +1,76 @@
 package plugin
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
+	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
 	"github.com/dseapy/grafana-numaflow-datasource/pkg/query/scenario"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana-plugin-sdk-go/backend/resource/httpadapter"
 )
-
-func newResourceHandler() backend.CallResourceHandler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/query-types", handleQueryTypes)
-
-	return httpadapter.New(mux)
-}
 
 type queryTypesResponse struct {
 	QueryTypes []string `json:"queryTypes"`
 }
 
-func handleQueryTypes(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.NotFound(w, r)
-		return
-	}
+type metricNamesResponse struct {
+	MetricNames []string `json:"metricNames"`
+}
 
-	queryTypes := &queryTypesResponse{
-		QueryTypes: []string{
-			scenario.Table,
-			scenario.NodeGraph,
-		},
+func (d *Datasource) CallResource(_ context.Context, req *backend.CallResourceRequest, sender backend.CallResourceResponseSender) error {
+	if req.Path == "/query-types" && req.Method == http.MethodGet {
+		queryTypes := &queryTypesResponse{
+			QueryTypes: []string{
+				scenario.Table,
+				scenario.NodeGraph,
+			},
+		}
+		j, err := json.Marshal(queryTypes)
+		if err != nil {
+			backend.Logger.Error("could not marshal queryTypes JSON", "err", err)
+			return sender.Send(&backend.CallResourceResponse{
+				Status: http.StatusInternalServerError,
+			})
+		}
+		return sender.Send(&backend.CallResourceResponse{
+			Status: http.StatusOK,
+			Body:   j,
+		})
+	} else if req.Path == "/metric-names" && req.Method == http.MethodPost {
+		var qm models.QueryModel
+		if d.settings == nil {
+			return sender.Send(&backend.CallResourceResponse{
+				Status: http.StatusBadRequest,
+				Body:   []byte("datasource settings nil when trying to get metric names"),
+			})
+		}
+		if err := qm.Unmarshall(req.Body, *d.settings); err != nil {
+			return sender.Send(&backend.CallResourceResponse{
+				Status: http.StatusBadRequest,
+				Body:   []byte("could not unmarshal query JSON"),
+			})
+		}
+		metricNames := &metricNamesResponse{
+			MetricNames: []string{
+				qm.RunnableQuery.Namespace,
+			},
+		}
+		j, err := json.Marshal(metricNames)
+		if err != nil {
+			backend.Logger.Error("could not marshal metricNames JSON", "err", err)
+			return sender.Send(&backend.CallResourceResponse{
+				Status: http.StatusInternalServerError,
+				Body:   []byte(err.Error()),
+			})
+		}
+		return sender.Send(&backend.CallResourceResponse{
+			Status: http.StatusOK,
+			Body:   j,
+		})
+	} else {
+		return sender.Send(&backend.CallResourceResponse{
+			Status: http.StatusNotFound,
+		})
 	}
-
-	j, err := json.Marshal(queryTypes)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	_, err = w.Write(j)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
 }

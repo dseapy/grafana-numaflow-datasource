@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import type { SelectableValue } from '@grafana/data';
-import type { NumaflowQuery } from '../../types';
+import type { NumaflowDataQuery } from '../../types';
 import type { ChangeOptions, EditorProps } from './types';
 
 type OnChangeType = (value: SelectableValue<string>) => void;
 
-export function useChangeSelectableValue(props: EditorProps, options: ChangeOptions<NumaflowQuery>): OnChangeType {
+export function useChangeSelectableValue(props: EditorProps, options: ChangeOptions<NumaflowDataQuery>): OnChangeType {
   const { onChange, onRunQuery, query } = props;
   const { propertyName, runQuery } = options;
 
