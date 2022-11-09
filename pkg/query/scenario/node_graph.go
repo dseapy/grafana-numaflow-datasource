@@ -1,11 +1,12 @@
 package scenario
 
 import (
+	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
 // Example on how you can structure data frames when returning node graph data.
-func newNodeGraphFrames() data.Frames {
+func newNodeGraphFrames(query models.RunnableQuery) data.Frames {
 	arcFooConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "green"}}
 	arcBarConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "red"}}
 	nodeFields := []*data.Field{

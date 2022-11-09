@@ -1,7 +1,6 @@
 package scenario
 
 const (
-	TimeSeries = "TimeSeries"
-	Table      = "Table"
-	NodeGraph  = "NodeGraph"
+	Table     = "Table"
+	NodeGraph = "NodeGraph"
 )

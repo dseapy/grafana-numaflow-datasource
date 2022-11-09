@@ -28,7 +28,6 @@ func handleQueryTypes(w http.ResponseWriter, r *http.Request) {
 
 	queryTypes := &queryTypesResponse{
 		QueryTypes: []string{
-			scenario.TimeSeries,
 			scenario.Table,
 			scenario.NodeGraph,
 		},
