@@ -170,7 +170,7 @@ func (d *Datasource) getResourcesInNamespace(qm *models.QueryModel, sender *back
 				Body:   []byte("error listing vertices in namespace"),
 			})
 		}
-		vertexNamesInNamespace := make([]string, 0, len(verticesInNamespace))
+		vertexNamesInNamespace := make([]string, len(verticesInNamespace))
 		for i := range verticesInNamespace {
 			vertexNamesInNamespace[i] = verticesInNamespace[i].Name
 		}
@@ -184,7 +184,7 @@ func (d *Datasource) getResourcesInNamespace(qm *models.QueryModel, sender *back
 				Body:   []byte("error listing isbsvcs in namespace"),
 			})
 		}
-		isbsvcNamesInNamespace := make([]string, 0, len(isbsvcsInNamespace))
+		isbsvcNamesInNamespace := make([]string, len(isbsvcsInNamespace))
 		for i := range isbsvcsInNamespace {
 			isbsvcNamesInNamespace[i] = isbsvcsInNamespace[i].Name
 		}
