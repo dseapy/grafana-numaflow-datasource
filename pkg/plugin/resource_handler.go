@@ -156,7 +156,7 @@ func (d *Datasource) getResourcesInNamespace(qm *models.QueryModel, sender *back
 				Body:   []byte("error listing pipelines in namespace"),
 			})
 		}
-		pipelineNamesInNamespace := make([]string, 0, len(pipelinesInNamespace))
+		pipelineNamesInNamespace := make([]string, len(pipelinesInNamespace))
 		for i := range pipelinesInNamespace {
 			pipelineNamesInNamespace[i] = pipelinesInNamespace[i].Name
 		}
