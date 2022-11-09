@@ -51,10 +51,16 @@ func (d *Datasource) CallResource(_ context.Context, req *backend.CallResourceRe
 				Body:   []byte("could not unmarshal query JSON"),
 			})
 		}
+		namespacesWithPipelines, err := d.ListNamespaces(d.settings.Namespace)
+		if err != nil {
+			backend.Logger.Error("error listing namespaces with pipelines", "err", err)
+			return sender.Send(&backend.CallResourceResponse{
+				Status: http.StatusInternalServerError,
+				Body:   []byte("error listing namespaces with pipelines"),
+			})
+		}
 		metricNames := &metricNamesResponse{
-			MetricNames: []string{
-				qm.RunnableQuery.Namespace,
-			},
+			MetricNames: namespacesWithPipelines,
 		}
 		j, err := json.Marshal(metricNames)
 		if err != nil {
