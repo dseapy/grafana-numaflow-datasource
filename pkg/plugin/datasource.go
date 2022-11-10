@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
 	"github.com/dseapy/grafana-numaflow-datasource/pkg/query"
+	"github.com/dseapy/grafana-numaflow-datasource/pkg/query/scenario"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
@@ -24,8 +25,8 @@ var (
 // Datasource is an example datasource which can respond to data queries, reports
 // its health and has streaming skills.
 type Datasource struct {
-	settings *models.PluginSettings
-	*nfClients
+	settings  *models.PluginSettings
+	nfClients *scenario.NFClients
 }
 
 // NewDatasource creates a new datasource instance.
@@ -35,7 +36,7 @@ func NewDatasource(dis backend.DataSourceInstanceSettings) (instancemgmt.Instanc
 		return nil, err
 	}
 
-	nfClients, err := NewNFClients()
+	nfClients, err := scenario.NewNFClients()
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +67,7 @@ func (ds *Datasource) QueryData(ctx context.Context, req *backend.QueryDataReque
 
 	// loop over queries and execute them individually.
 	for _, q := range req.Queries {
-		res := query.RunQuery(ctx, *ds.settings, q)
+		res := query.RunQuery(ctx, *ds.settings, ds.nfClients, q)
 
 		// save the response in a hashmap
 		// based on with RefID as identifier

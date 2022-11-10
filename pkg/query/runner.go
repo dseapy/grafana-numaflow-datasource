@@ -10,7 +10,7 @@ import (
 	"k8s.io/utils/pointer"
 )
 
-func RunQuery(_ context.Context, settings models.PluginSettings, query backend.DataQuery) backend.DataResponse {
+func RunQuery(_ context.Context, settings models.PluginSettings, nfClient *scenario.NFClients, query backend.DataQuery) backend.DataResponse {
 	response := backend.DataResponse{}
 	var qm models.QueryModel
 	backend.Logger.Debug("query json %v", string(query.JSON))
@@ -31,7 +31,7 @@ func RunQuery(_ context.Context, settings models.PluginSettings, query backend.D
 	}
 
 	// create frames
-	frames := scenario.NewDataFrames(query, qm.RunnableQuery)
+	frames := scenario.NewDataFrames(nfClient, query, qm.RunnableQuery)
 	if len(frames) == 0 {
 		return response
 	}

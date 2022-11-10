@@ -7,7 +7,7 @@
 * Use this data source for metadata that can't easily be retrieved from existing grafana data sources, such as `edge` & `vertex` metadata available in a [Pipeline](https://github.com/numaproj/numaflow/blob/main/docs/pipeline.md) Kubernetes custom resource.
 
 **Disclaimers**:
-* Proof-of-concept, not an official plugin, not affiliated with numaflow - no support guarantees :)
+* **Proof-of-concept**, not an official plugin, not affiliated with numaflow
 * Grafana's [node graph panel](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/node-graph/) is in beta
 * Plugin currently depends directly on core numaflow code and not on any official SDKs/APIs/Clients
 

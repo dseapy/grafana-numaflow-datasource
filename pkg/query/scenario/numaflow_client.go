@@ -1,4 +1,4 @@
-package plugin
+package scenario
 
 import (
 	"context"
@@ -21,15 +21,15 @@ import (
 	metricsversiond "k8s.io/metrics/pkg/client/clientset/versioned"
 )
 
-// nfClients and this file is based on handler.go in numaflow server
-type nfClients struct {
+// NFClients and this file is based on handler.go in numaflow server
+type NFClients struct {
 	kubeClient     kubernetes.Interface
 	metricsClient  *metricsversiond.Clientset
 	numaflowClient dfv1clients.NumaflowV1alpha1Interface
 }
 
 // NewNFClients creates various clients used to get data about numaflow from various endpoints
-func NewNFClients() (*nfClients, error) {
+func NewNFClients() (*NFClients, error) {
 	var restConfig *rest.Config
 	var err error
 	kubeconfig := os.Getenv("KUBECONFIG")
@@ -54,7 +54,7 @@ func NewNFClients() (*nfClients, error) {
 	}
 	metricsClient := metricsversiond.NewForConfigOrDie(restConfig)
 	numaflowClient := dfv1versiond.NewForConfigOrDie(restConfig).NumaflowV1alpha1()
-	return &nfClients{
+	return &NFClients{
 		kubeClient:     kubeClient,
 		metricsClient:  metricsClient,
 		numaflowClient: numaflowClient,
@@ -62,8 +62,8 @@ func NewNFClients() (*nfClients, error) {
 }
 
 // ListPipelines is used to provide all the numaflow pipelines in a given namespace
-func (ds *Datasource) ListPipelines(ns string) ([]dfv1.Pipeline, error) {
-	plList, err := ds.numaflowClient.Pipelines(ns).List(context.Background(), metav1.ListOptions{})
+func (c *NFClients) ListPipelines(ns string) ([]dfv1.Pipeline, error) {
+	plList, err := c.numaflowClient.Pipelines(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -71,8 +71,8 @@ func (ds *Datasource) ListPipelines(ns string) ([]dfv1.Pipeline, error) {
 }
 
 // GetPipeline is used to provide the spec of a given numaflow pipeline
-func (ds *Datasource) GetPipeline(ns, pipeline string) (*dfv1.Pipeline, error) {
-	pl, err := ds.numaflowClient.Pipelines(ns).Get(context.Background(), pipeline, metav1.GetOptions{})
+func (c *NFClients) GetPipeline(ns, pipeline string) (*dfv1.Pipeline, error) {
+	pl, err := c.numaflowClient.Pipelines(ns).Get(context.Background(), pipeline, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +80,8 @@ func (ds *Datasource) GetPipeline(ns, pipeline string) (*dfv1.Pipeline, error) {
 }
 
 // ListNamespacesWithPipelines is used to provide all the namespaces that have numaflow pipelines running
-func (ds *Datasource) ListNamespacesWithPipelines(ns string) ([]string, error) {
-	l, err := ds.numaflowClient.Pipelines(ns).List(context.Background(), metav1.ListOptions{})
+func (c *NFClients) ListNamespacesWithPipelines(ns string) ([]string, error) {
+	l, err := c.numaflowClient.Pipelines(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +97,8 @@ func (ds *Datasource) ListNamespacesWithPipelines(ns string) ([]string, error) {
 }
 
 // ListNamespacesWithVertices is used to provide all the namespaces that have numaflow pipelines running
-func (ds *Datasource) ListNamespacesWithVertices(ns string) ([]string, error) {
-	l, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{})
+func (c *NFClients) ListNamespacesWithVertices(ns string) ([]string, error) {
+	l, err := c.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -114,8 +114,8 @@ func (ds *Datasource) ListNamespacesWithVertices(ns string) ([]string, error) {
 }
 
 // ListNamespacesWithInterStepBufferServices is used to provide all the namespaces that have numaflow pipelines running
-func (ds *Datasource) ListNamespacesWithInterStepBufferServices(ns string) ([]string, error) {
-	l, err := ds.numaflowClient.InterStepBufferServices(ns).List(context.Background(), metav1.ListOptions{})
+func (c *NFClients) ListNamespacesWithInterStepBufferServices(ns string) ([]string, error) {
+	l, err := c.numaflowClient.InterStepBufferServices(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +131,8 @@ func (ds *Datasource) ListNamespacesWithInterStepBufferServices(ns string) ([]st
 }
 
 // ListInterStepBufferServices is used to provide all the interstepbuffer services in a namespace
-func (ds *Datasource) ListInterStepBufferServices(ns string) ([]dfv1.InterStepBufferService, error) {
-	isbsvcList, err := ds.numaflowClient.InterStepBufferServices(ns).List(context.Background(), metav1.ListOptions{})
+func (c *NFClients) ListInterStepBufferServices(ns string) ([]dfv1.InterStepBufferService, error) {
+	isbsvcList, err := c.numaflowClient.InterStepBufferServices(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -140,8 +140,8 @@ func (ds *Datasource) ListInterStepBufferServices(ns string) ([]dfv1.InterStepBu
 }
 
 // GetInterStepBufferService is used to provide the spec of the interstep buffer service
-func (ds *Datasource) GetInterStepBufferService(ns, isbsvc string) (*dfv1.InterStepBufferService, error) {
-	i, err := ds.numaflowClient.InterStepBufferServices(ns).Get(context.Background(), isbsvc, metav1.GetOptions{})
+func (c *NFClients) GetInterStepBufferService(ns, isbsvc string) (*dfv1.InterStepBufferService, error) {
+	i, err := c.numaflowClient.InterStepBufferServices(ns).Get(context.Background(), isbsvc, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (ds *Datasource) GetInterStepBufferService(ns, isbsvc string) (*dfv1.InterS
 }
 
 // ListVertices is used to provide all the vertices of a pipeline
-func (ds *Datasource) ListVertices(ns string) ([]dfv1.Vertex, error) {
-	vertexList, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{})
+func (c *NFClients) ListVertices(ns string) ([]dfv1.Vertex, error) {
+	vertexList, err := c.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -158,8 +158,8 @@ func (ds *Datasource) ListVertices(ns string) ([]dfv1.Vertex, error) {
 }
 
 // ListPipelineVertices is used to provide all the vertices of a pipeline
-func (ds *Datasource) ListPipelineVertices(ns, pipeline string) ([]dfv1.Vertex, error) {
-	vertices, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{
+func (c *NFClients) ListPipelineVertices(ns, pipeline string) ([]dfv1.Vertex, error) {
+	vertices, err := c.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s", dfv1.KeyPipelineName, pipeline),
 	})
 	if err != nil {
@@ -169,8 +169,8 @@ func (ds *Datasource) ListPipelineVertices(ns, pipeline string) ([]dfv1.Vertex, 
 }
 
 // GetVertex is used to provide the vertex spec
-func (ds *Datasource) GetVertex(ns, vertex, pipeline string) (*dfv1.Vertex, error) {
-	vertices, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{
+func (c *NFClients) GetVertex(ns, vertex, pipeline string) (*dfv1.Vertex, error) {
+	vertices, err := c.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s,%s=%s", dfv1.KeyPipelineName, pipeline, dfv1.KeyVertexName, vertex),
 	})
 	if err != nil {
@@ -183,9 +183,9 @@ func (ds *Datasource) GetVertex(ns, vertex, pipeline string) (*dfv1.Vertex, erro
 }
 
 // ListVertexPods is used to provide all the pods of a vertex
-func (ds *Datasource) ListVertexPods(ns, pipeline, vertex, limit, cont string) ([]v1.Pod, error) {
+func (c *NFClients) ListVertexPods(ns, pipeline, vertex, limit, cont string) ([]v1.Pod, error) {
 	lmt, _ := strconv.ParseInt(limit, 10, 64)
-	pods, err := ds.kubeClient.CoreV1().Pods(ns).List(context.Background(), metav1.ListOptions{
+	pods, err := c.kubeClient.CoreV1().Pods(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s,%s=%s", dfv1.KeyPipelineName, pipeline, dfv1.KeyVertexName, vertex),
 		Limit:         lmt,
 		Continue:      cont,
@@ -197,9 +197,9 @@ func (ds *Datasource) ListVertexPods(ns, pipeline, vertex, limit, cont string) (
 }
 
 // ListPodsMetrics is used to provide a list of all metrics in all the pods
-func (ds *Datasource) ListPodsMetrics(ns, limit, cont string) ([]v1beta1.PodMetrics, error) {
+func (c *NFClients) ListPodsMetrics(ns, limit, cont string) ([]v1beta1.PodMetrics, error) {
 	lmt, _ := strconv.ParseInt(limit, 10, 64)
-	l, err := ds.metricsClient.MetricsV1beta1().PodMetricses(ns).List(context.Background(), metav1.ListOptions{
+	l, err := c.metricsClient.MetricsV1beta1().PodMetricses(ns).List(context.Background(), metav1.ListOptions{
 		Limit:    lmt,
 		Continue: cont,
 	})
@@ -210,8 +210,8 @@ func (ds *Datasource) ListPodsMetrics(ns, limit, cont string) ([]v1beta1.PodMetr
 }
 
 // GetPodMetrics is used to provide the metrics like CPU/Memory utilization for a pod
-func (ds *Datasource) GetPodMetrics(ns, po string) (*v1beta1.PodMetrics, error) {
-	m, err := ds.metricsClient.MetricsV1beta1().PodMetricses(ns).Get(context.Background(), po, metav1.GetOptions{})
+func (c *NFClients) GetPodMetrics(ns, po string) (*v1beta1.PodMetrics, error) {
+	m, err := c.metricsClient.MetricsV1beta1().PodMetricses(ns).Get(context.Background(), po, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -219,7 +219,7 @@ func (ds *Datasource) GetPodMetrics(ns, po string) (*v1beta1.PodMetrics, error) 
 }
 
 // ListPipelineEdges is used to provide information about all the pipeline edges
-func (ds *Datasource) ListPipelineEdges(ns, pipeline string) ([]*daemon.BufferInfo, error) {
+func (c *NFClients) ListPipelineEdges(ns, pipeline string) ([]*daemon.BufferInfo, error) {
 	client, err := daemonclient.NewDaemonServiceClient(daemonSvcAddress(ns, pipeline))
 	if err != nil {
 		return nil, err
@@ -235,7 +235,7 @@ func (ds *Datasource) ListPipelineEdges(ns, pipeline string) ([]*daemon.BufferIn
 }
 
 // GetPipelineEdge is used to provide information about a single pipeline edge
-func (ds *Datasource) GetPipelineEdge(ns, pipeline, edge string) (*daemon.BufferInfo, error) {
+func (c *NFClients) GetPipelineEdge(ns, pipeline, edge string) (*daemon.BufferInfo, error) {
 	client, err := daemonclient.NewDaemonServiceClient(daemonSvcAddress(ns, pipeline))
 	if err != nil {
 		return nil, err
@@ -252,7 +252,7 @@ func (ds *Datasource) GetPipelineEdge(ns, pipeline, edge string) (*daemon.Buffer
 }
 
 // GetVertexMetrics is used to provide information about the vertex including processing rates.
-func (ds *Datasource) GetVertexMetrics(ns, pipeline, vertex string) (*daemon.VertexMetrics, error) {
+func (c *NFClients) GetVertexMetrics(ns, pipeline, vertex string) (*daemon.VertexMetrics, error) {
 	client, err := daemonclient.NewDaemonServiceClient(daemonSvcAddress(ns, pipeline))
 	if err != nil {
 		return nil, err
@@ -268,7 +268,7 @@ func (ds *Datasource) GetVertexMetrics(ns, pipeline, vertex string) (*daemon.Ver
 }
 
 // GetVertexWatermark is used to provide the head watermark for a given vertex
-func (ds *Datasource) GetVertexWatermark(ns, pipeline, vertex string) (*daemon.VertexWatermark, error) {
+func (c *NFClients) GetVertexWatermark(ns, pipeline, vertex string) (*daemon.VertexWatermark, error) {
 	client, err := daemonclient.NewDaemonServiceClient(daemonSvcAddress(ns, pipeline))
 	if err != nil {
 		return nil, err

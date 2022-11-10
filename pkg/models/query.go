@@ -24,10 +24,6 @@ RunnableQuery describes what data should be returned by the backend.
 
 if "vertex" exists, "pipeline" must exist.
 
-"*": give me all of those
-"my-foo": give me that one
-"": ignore, but relevant
-
 DATA_QUERY
 ----------
 For all pipelines all namespaces: {"namespace":"","pipeline":"*"}

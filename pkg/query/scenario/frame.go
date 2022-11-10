@@ -6,12 +6,12 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
-func NewDataFrames(query backend.DataQuery, runnableQuery models.RunnableQuery) data.Frames {
+func NewDataFrames(nfClient *NFClients, query backend.DataQuery, runnableQuery models.RunnableQuery) data.Frames {
 	switch query.QueryType {
 	case Table:
-		return newTableFrames(runnableQuery)
+		return newTableFrames(nfClient, runnableQuery)
 	case NodeGraph:
-		return newNodeGraphFrames(runnableQuery)
+		return newNodeGraphFrames(nfClient, runnableQuery)
 	}
 
 	return nil

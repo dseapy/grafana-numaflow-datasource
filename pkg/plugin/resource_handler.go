@@ -106,7 +106,7 @@ func (d *Datasource) getNamespacesContainingResource(qm *models.QueryModel, send
 	metricNames := &metricNamesResponse{}
 	switch qm.RunnableQuery.ResourceType {
 	case models.PipelineResourceType:
-		namespacesWithPipelines, err := d.ListNamespacesWithPipelines(d.settings.Namespace)
+		namespacesWithPipelines, err := d.nfClients.ListNamespacesWithPipelines(d.settings.Namespace)
 		if err != nil {
 			backend.Logger.Error("error listing namespaces with pipelines", "err", err)
 			return nil, (*sender).Send(&backend.CallResourceResponse{
@@ -116,7 +116,7 @@ func (d *Datasource) getNamespacesContainingResource(qm *models.QueryModel, send
 		}
 		metricNames.MetricNames = namespacesWithPipelines
 	case models.VertexResourceType:
-		namespacesWithVertices, err := d.ListNamespacesWithVertices(d.settings.Namespace)
+		namespacesWithVertices, err := d.nfClients.ListNamespacesWithVertices(d.settings.Namespace)
 		if err != nil {
 			backend.Logger.Error("error listing namespaces with vertices", "err", err)
 			return nil, (*sender).Send(&backend.CallResourceResponse{
@@ -126,7 +126,7 @@ func (d *Datasource) getNamespacesContainingResource(qm *models.QueryModel, send
 		}
 		metricNames.MetricNames = namespacesWithVertices
 	case models.IsbsvcResourceType:
-		namespacesWithInterStepBufferServices, err := d.ListNamespacesWithInterStepBufferServices(d.settings.Namespace)
+		namespacesWithInterStepBufferServices, err := d.nfClients.ListNamespacesWithInterStepBufferServices(d.settings.Namespace)
 		if err != nil {
 			backend.Logger.Error("error listing namespaces with isbsvc", "err", err)
 			return nil, (*sender).Send(&backend.CallResourceResponse{
@@ -149,7 +149,7 @@ func (d *Datasource) getResourcesInNamespace(qm *models.QueryModel, sender *back
 	metricNames := &metricNamesResponse{}
 	switch qm.RunnableQuery.ResourceType {
 	case models.PipelineResourceType:
-		pipelinesInNamespace, err := d.ListPipelines(*qm.RunnableQuery.Namespace)
+		pipelinesInNamespace, err := d.nfClients.ListPipelines(*qm.RunnableQuery.Namespace)
 		if err != nil {
 			backend.Logger.Error("error listing pipelines in namespace", "err", err)
 			return nil, (*sender).Send(&backend.CallResourceResponse{
@@ -163,7 +163,7 @@ func (d *Datasource) getResourcesInNamespace(qm *models.QueryModel, sender *back
 		}
 		metricNames.MetricNames = pipelineNamesInNamespace
 	case models.VertexResourceType:
-		verticesInNamespace, err := d.ListPipelineVertices(*qm.RunnableQuery.Namespace, *qm.RunnableQuery.Pipeline)
+		verticesInNamespace, err := d.nfClients.ListPipelineVertices(*qm.RunnableQuery.Namespace, *qm.RunnableQuery.Pipeline)
 		if err != nil {
 			backend.Logger.Error("error listing pipeline vertices in namespace", "err", err)
 			return nil, (*sender).Send(&backend.CallResourceResponse{
@@ -177,7 +177,7 @@ func (d *Datasource) getResourcesInNamespace(qm *models.QueryModel, sender *back
 		}
 		metricNames.MetricNames = vertexNamesInNamespace
 	case models.IsbsvcResourceType:
-		isbsvcsInNamespace, err := d.ListInterStepBufferServices(*qm.RunnableQuery.Namespace)
+		isbsvcsInNamespace, err := d.nfClients.ListInterStepBufferServices(*qm.RunnableQuery.Namespace)
 		if err != nil {
 			backend.Logger.Error("error listing isbsvcs in namespace", "err", err)
 			return nil, (*sender).Send(&backend.CallResourceResponse{
