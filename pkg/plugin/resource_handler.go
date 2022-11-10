@@ -3,6 +3,7 @@ package plugin
 import (
 	"context"
 	"encoding/json"
+	dfv1 "github.com/numaproj/numaflow/pkg/apis/numaflow/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 	"net/http"
 
@@ -162,17 +163,17 @@ func (d *Datasource) getResourcesInNamespace(qm *models.QueryModel, sender *back
 		}
 		metricNames.MetricNames = pipelineNamesInNamespace
 	case models.VertexResourceType:
-		verticesInNamespace, err := d.ListVertices(*qm.RunnableQuery.Namespace)
+		verticesInNamespace, err := d.ListPipelineVertices(*qm.RunnableQuery.Namespace, *qm.RunnableQuery.Pipeline)
 		if err != nil {
-			backend.Logger.Error("error listing vertices in namespace", "err", err)
+			backend.Logger.Error("error listing pipeline vertices in namespace", "err", err)
 			return nil, (*sender).Send(&backend.CallResourceResponse{
 				Status: http.StatusInternalServerError,
-				Body:   []byte("error listing vertices in namespace"),
+				Body:   []byte("error listing pipeline vertices in namespace"),
 			})
 		}
 		vertexNamesInNamespace := make([]string, len(verticesInNamespace))
 		for i := range verticesInNamespace {
-			vertexNamesInNamespace[i] = verticesInNamespace[i].Name
+			vertexNamesInNamespace[i] = verticesInNamespace[i].Labels[dfv1.KeyVertexName]
 		}
 		metricNames.MetricNames = vertexNamesInNamespace
 	case models.IsbsvcResourceType:

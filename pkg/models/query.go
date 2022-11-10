@@ -22,27 +22,33 @@ const (
 /*
 RunnableQuery describes what data should be returned by the backend.
 
-Only one non-namespace resource may be specified ("pipeline", "vertex", or "isbsvc")
+if "vertex" exists, "pipeline" must exist.
+
+"*": give me all of those
+"my-foo": give me that one
+"": ignore, but relevant
 
 DATA_QUERY
 ----------
 For all pipelines all namespaces: {"namespace":"","pipeline":"*"}
-For all vertices all namespace: {"namespace":"","vertex":"*"}
+For all vertices all pipelines: {"namespace":"","pipeline":"","vertex":"*"}
 For all isbsvcs all namespace: {"namespace":"","isbsvc":"*"}
-For all pipelines in namespace: {"namespace":"my-ns","pipeline":"*"}
-For all vertices in namespace: {"namespace":"my-ns","vertex":"*"}
-For all isbsvcs in namespace: {"namespace":"my-ns","isbsvc":"*"}
-For a single pipeline: {"namespace":"my-ns","pipeline":"my-pl"}
-For a single vertex: {"namespace":"my-ns","vertex":"my-vertex"}
-For a single isbsvc: {"namespace":"my-ns","isbsvc":"my-isbsvc"}
+For all pipelines in namespace: {"namespace":"$namespace","pipeline":"*"}
+For all vertices in namespace: {"namespace":"$namespace","pipeline":"","vertex":"*"}
+For all vertices in pipeline: {"namespace":"$namespace","pipeline":"my-pl","vertex":"*"}
+For all isbsvcs in namespace: {"namespace":"$namespace","isbsvc":"*"}
+For a single pipeline: {"namespace":"$namespace","pipeline":"my-pl"}
+For a single vertex: {"namespace":"$namespace","pipeline":"my-pl","vertex":"my-vertex"}
+For a single isbsvc: {"namespace":"$namespace","isbsvc":"my-isbsvc"}
 
 METRIC_NAME_QUERY
 -----------------
-For all pipelines in namespace: {"namespace":"my-ns","pipeline":"*"}
-For all vertices in namespace: {"namespace":"my-ns","vertex":"*"}
-For all isbsvcs in namespace: {"namespace":"my-ns","isbsvc":"*"}
+For all pipelines in namespace: {"namespace":"$namespace","pipeline":"*"}
+For all vertices in namespace: {"namespace":"$namespace","pipeline":"","vertex":"*"}
+For all vertices in pipeline: {"namespace":"$namespace","pipeline":"$pipeline","vertex":"*"}
+For all isbsvcs in namespace: {"namespace":"$namespace","isbsvc":"*"}
 For all namespaces containing pipelines: {"namespace":"*","pipeline":""}
-For all namespaces containing vertices: {"namespace":"*","vertex":""}
+For all namespaces containing vertices: {"namespace":"*","pipeline":"","vertex":""}
 For all namespaces containing isbsvcs: {"namespace":"*","isbsvc":""}
 */
 type RunnableQuery struct {
@@ -62,24 +68,20 @@ func (qm *QueryModel) Unmarshall(b []byte) error {
 		return err
 	}
 
-	numResourcesSpecified := 0
 	if qm.RunnableQuery.Pipeline != nil {
-		qm.RunnableQuery.ResourceName = *qm.RunnableQuery.Pipeline
-		qm.RunnableQuery.ResourceType = PipelineResourceType
-		numResourcesSpecified++
-	}
-	if qm.RunnableQuery.Vertex != nil {
-		qm.RunnableQuery.ResourceName = *qm.RunnableQuery.Vertex
-		qm.RunnableQuery.ResourceType = VertexResourceType
-		numResourcesSpecified++
-	}
-	if qm.RunnableQuery.InterStepBufferService != nil {
+		if qm.RunnableQuery.Vertex != nil {
+			qm.RunnableQuery.ResourceName = *qm.RunnableQuery.Vertex
+			qm.RunnableQuery.ResourceType = VertexResourceType
+		} else {
+			qm.RunnableQuery.ResourceName = *qm.RunnableQuery.Pipeline
+			qm.RunnableQuery.ResourceType = PipelineResourceType
+		}
+	} else if qm.RunnableQuery.InterStepBufferService != nil {
 		qm.RunnableQuery.ResourceName = *qm.RunnableQuery.InterStepBufferService
 		qm.RunnableQuery.ResourceType = IsbsvcResourceType
-		numResourcesSpecified++
-	}
-	if numResourcesSpecified != 1 {
-		return errors.New(`must specify exactly one of the following in query: "pipeline", "vertex", "isbsvc"`)
+	} else {
+		// TODO: better error reporting
+		return errors.New("cannot unmarshal json")
 	}
 
 	return nil

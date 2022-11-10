@@ -158,12 +158,9 @@ func (ds *Datasource) ListVertices(ns string) ([]dfv1.Vertex, error) {
 }
 
 // ListPipelineVertices is used to provide all the vertices of a pipeline
-func (ds *Datasource) ListPipelineVertices(limit, ns, pipeline, cont string) ([]dfv1.Vertex, error) {
-	lmt, _ := strconv.ParseInt(limit, 10, 64)
+func (ds *Datasource) ListPipelineVertices(ns, pipeline string) ([]dfv1.Vertex, error) {
 	vertices, err := ds.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s", dfv1.KeyPipelineName, pipeline),
-		Limit:         lmt,
-		Continue:      cont,
 	})
 	if err != nil {
 		return nil, err
