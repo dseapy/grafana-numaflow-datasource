@@ -105,7 +105,7 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 		vertices = []v1alpha1.Vertex{*vertex}
 	}
 	namespaces := make([]string, len(vertices))
-	pipelineName := make([]string, len(vertices))
+	pipelineNames := make([]string, len(vertices))
 	names := make([]string, len(vertices))
 	vtype := make([]string, len(vertices))
 	desiredReplicas := make([]*int32, len(vertices))
@@ -119,7 +119,7 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 	creationTime := make([]time.Time, len(vertices))
 	for i := range vertices {
 		namespaces[i] = vertices[i].Namespace
-		pipelineName[i] = vertices[i].Spec.PipelineName
+		pipelineNames[i] = vertices[i].Spec.PipelineName
 		names[i] = vertices[i].Spec.Name
 		if vertices[i].IsASource() {
 			vtype[i] = "source"
@@ -189,7 +189,7 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 
 	fields := []*data.Field{
 		data.NewField("namespace", nil, namespaces),
-		data.NewField("pipeline name", nil, pipelineName),
+		data.NewField("pipeline", nil, pipelineNames),
 		data.NewField("name", nil, names),
 		data.NewField("type", nil, vtype),
 		data.NewField("phase", nil, phases),
