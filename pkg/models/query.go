@@ -3,6 +3,8 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	v1 "k8s.io/api/core/v1"
+	"strings"
 )
 
 type QueryModel struct {
@@ -81,4 +83,39 @@ func (qm *QueryModel) Unmarshall(b []byte) error {
 	}
 
 	return nil
+}
+
+func (q *RunnableQuery) GetNamespace() string {
+	if q.IsMultiNamespaceFilter() {
+		return v1.NamespaceAll
+	}
+	return *q.Namespace
+}
+
+func (q *RunnableQuery) IsMultiNamespaceFilter() bool {
+	return strings.Contains(*q.Namespace, ",")
+}
+
+func (q *RunnableQuery) IsMultiPipelineFilter() bool {
+	return strings.Contains(*q.Pipeline, ",")
+}
+
+func (q *RunnableQuery) GetFilterNamespaces() []string {
+	if !q.IsMultiNamespaceFilter() {
+		return []string{*q.Namespace}
+	}
+	ns := *q.Namespace
+	ns = strings.ReplaceAll(ns, "{", "")
+	ns = strings.ReplaceAll(ns, "}", "")
+	return strings.Split(ns, ",")
+}
+
+func (q *RunnableQuery) GetFilterPipelines() []string {
+	if !q.IsMultiPipelineFilter() {
+		return []string{*q.Pipeline}
+	}
+	pl := *q.Pipeline
+	pl = strings.ReplaceAll(pl, "{", "")
+	pl = strings.ReplaceAll(pl, "}", "")
+	return strings.Split(pl, ",")
 }

@@ -3,7 +3,6 @@ package scenario
 import (
 	"errors"
 	"k8s.io/utils/pointer"
-	"strings"
 	"time"
 
 	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
@@ -11,7 +10,6 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/numaproj/numaflow/pkg/apis/numaflow/v1alpha1"
 	"github.com/numaproj/numaflow/pkg/isb"
-	v1 "k8s.io/api/core/v1"
 	"k8s.io/utils/strings/slices"
 )
 
@@ -28,8 +26,8 @@ func newTableFrames(nfClient *NFClients, query models.RunnableQuery) (data.Frame
 }
 
 func newPipelineTableFrames(nfClient *NFClients, query models.RunnableQuery) (data.Frames, error) {
-	queryNamespace := getNamespace(&query)
-	queryFilterNamespaces := getFilterNamespaces(&query)
+	queryNamespace := query.GetNamespace()
+	queryFilterNamespaces := query.GetFilterNamespaces()
 	pipelines := []v1alpha1.Pipeline{}
 	if *query.Pipeline == "*" {
 		p, err := nfClient.ListPipelines(queryNamespace)
@@ -81,12 +79,12 @@ func newPipelineTableFrames(nfClient *NFClients, query models.RunnableQuery) (da
 }
 
 func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data.Frames, error) {
-	queryNamespace := getNamespace(&query)
-	queryFilterNamespaces := getFilterNamespaces(&query)
+	queryNamespace := query.GetNamespace()
+	queryFilterNamespaces := query.GetFilterNamespaces()
 	vertices := []v1alpha1.Vertex{}
 	queryPipeline := *query.Pipeline
 	if *query.Vertex == "*" {
-		queryFilterPipelines := getFilterPipelines(&query)
+		queryFilterPipelines := query.GetFilterPipelines()
 		v, err := nfClient.ListVertices(queryNamespace)
 		if err != nil {
 			return nil, err
@@ -206,8 +204,8 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 }
 
 func newIsbsvcTableFrames(nfClient *NFClients, query models.RunnableQuery) (data.Frames, error) {
-	queryNamespace := getNamespace(&query)
-	queryFilterNamespaces := getFilterNamespaces(&query)
+	queryNamespace := query.GetNamespace()
+	queryFilterNamespaces := query.GetFilterNamespaces()
 	isbsvcs := []v1alpha1.InterStepBufferService{}
 	if *query.InterStepBufferService == "*" {
 		is, err := nfClient.ListInterStepBufferServices(queryNamespace)
@@ -255,39 +253,4 @@ func newIsbsvcTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 		data.NewField("creation time", nil, creationTime),
 	}
 	return data.Frames{data.NewFrame("isbsvcs", fields...)}, nil
-}
-
-func getNamespace(q *models.RunnableQuery) string {
-	if isMultiNamespaceFilter(q) {
-		return v1.NamespaceAll
-	}
-	return *q.Namespace
-}
-
-func isMultiNamespaceFilter(q *models.RunnableQuery) bool {
-	return strings.Contains(*q.Namespace, ",")
-}
-
-func isMultiPipelineFilter(q *models.RunnableQuery) bool {
-	return strings.Contains(*q.Pipeline, ",")
-}
-
-func getFilterNamespaces(q *models.RunnableQuery) []string {
-	if !isMultiNamespaceFilter(q) {
-		return []string{*q.Namespace}
-	}
-	ns := *q.Namespace
-	ns = strings.ReplaceAll(ns, "{", "")
-	ns = strings.ReplaceAll(ns, "}", "")
-	return strings.Split(ns, ",")
-}
-
-func getFilterPipelines(q *models.RunnableQuery) []string {
-	if !isMultiPipelineFilter(q) {
-		return []string{*q.Pipeline}
-	}
-	pl := *q.Pipeline
-	pl = strings.ReplaceAll(pl, "{", "")
-	pl = strings.ReplaceAll(pl, "}", "")
-	return strings.Split(pl, ",")
 }

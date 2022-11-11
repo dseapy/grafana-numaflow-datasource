@@ -1,12 +1,16 @@
 package scenario
 
 import (
+	"errors"
 	"github.com/dseapy/grafana-numaflow-datasource/pkg/models"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
 // Example on how you can structure data frames when returning node graph data.
 func newNodeGraphFrames(nfClient *NFClients, query models.RunnableQuery) (data.Frames, error) {
+	if query.ResourceType != models.PipelineResourceType {
+		return nil, errors.New("node graph currenly only supports pipelines")
+	}
 	arcFooConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "green"}}
 	arcBarConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "red"}}
 	nodeFields := []*data.Field{
