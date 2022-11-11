@@ -168,8 +168,8 @@ func (c *NFClients) ListPipelineVertices(ns, pipeline string) ([]dfv1.Vertex, er
 	return vertices.Items, nil
 }
 
-// GetVertex is used to provide the vertex spec
-func (c *NFClients) GetVertex(ns, vertex, pipeline string) (*dfv1.Vertex, error) {
+// GetPipelineVertex is used to provide the vertex spec
+func (c *NFClients) GetPipelineVertex(ns, pipeline, vertex string) (*dfv1.Vertex, error) {
 	vertices, err := c.numaflowClient.Vertices(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s,%s=%s", dfv1.KeyPipelineName, pipeline, dfv1.KeyVertexName, vertex),
 	})

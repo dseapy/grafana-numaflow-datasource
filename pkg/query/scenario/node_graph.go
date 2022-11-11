@@ -6,7 +6,7 @@ import (
 )
 
 // Example on how you can structure data frames when returning node graph data.
-func newNodeGraphFrames(nfClient *NFClients, query models.RunnableQuery) data.Frames {
+func newNodeGraphFrames(nfClient *NFClients, query models.RunnableQuery) (data.Frames, error) {
 	arcFooConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "green"}}
 	arcBarConfig := &data.FieldConfig{Color: map[string]interface{}{"mode": "fixed", "fixedColor": "red"}}
 	nodeFields := []*data.Field{
@@ -35,5 +35,5 @@ func newNodeGraphFrames(nfClient *NFClients, query models.RunnableQuery) data.Fr
 	}
 	edgesFrame := data.NewFrame("edges", edgeFields...)
 
-	return data.Frames{nodesFrame, edgesFrame}
+	return data.Frames{nodesFrame, edgesFrame}, nil
 }

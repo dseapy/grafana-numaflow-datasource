@@ -31,7 +31,12 @@ func RunQuery(_ context.Context, settings models.PluginSettings, nfClient *scena
 	}
 
 	// create frames
-	frames := scenario.NewDataFrames(nfClient, query, qm.RunnableQuery)
+	frames, err := scenario.NewDataFrames(nfClient, query, qm.RunnableQuery)
+	if err != nil {
+		backend.Logger.Error("error retrieving frames", "err", err)
+		response.Error = errors.New(`error retrieving frames`)
+		return response
+	}
 	if len(frames) == 0 {
 		return response
 	}
