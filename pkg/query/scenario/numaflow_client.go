@@ -183,12 +183,9 @@ func (c *NFClients) GetPipelineVertex(ns, pipeline, vertex string) (*dfv1.Vertex
 }
 
 // ListVertexPods is used to provide all the pods of a vertex
-func (c *NFClients) ListVertexPods(ns, pipeline, vertex, limit, cont string) ([]v1.Pod, error) {
-	lmt, _ := strconv.ParseInt(limit, 10, 64)
+func (c *NFClients) ListVertexPods(ns, pipeline, vertex string) ([]v1.Pod, error) {
 	pods, err := c.kubeClient.CoreV1().Pods(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s,%s=%s", dfv1.KeyPipelineName, pipeline, dfv1.KeyVertexName, vertex),
-		Limit:         lmt,
-		Continue:      cont,
 	})
 	if err != nil {
 		return nil, err

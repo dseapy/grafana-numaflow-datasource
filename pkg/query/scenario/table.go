@@ -2,6 +2,7 @@ package scenario
 
 import (
 	"errors"
+	"k8s.io/utils/pointer"
 	"strings"
 	"time"
 
@@ -110,9 +111,11 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 	desiredReplicas := make([]*int32, len(vertices))
 	replicas := make([]uint32, len(vertices))
 	phases := make([]string, len(vertices))
-	processingRate := make([]float64, len(vertices))
-	pendingMessages := make([]int64, len(vertices))
-	watermark := make([]time.Time, len(vertices))
+	processingRate := make([]*float64, len(vertices))
+	pendingMessages := make([]*int64, len(vertices))
+	watermark := make([]*time.Time, len(vertices))
+	cpuUsage := make([]*int64, len(vertices))
+	memoryUsage := make([]*int64, len(vertices))
 	creationTime := make([]time.Time, len(vertices))
 	for i := range vertices {
 		namespaces[i] = vertices[i].Namespace
@@ -139,13 +142,13 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 			if !existing || rate < 0 || rate == isb.RateNotAvailable { // Rate not available
 				backend.Logger.Debug("processing rate not available for vertex", "namespace", queryNamespace, "pipeline", queryPipeline, "vertex", vertices[i].Spec.Name)
 			} else {
-				processingRate[i] = rate
+				processingRate[i] = pointer.Float64(rate)
 			}
 			pending, existing := vMetrics.Pendings["default"]
 			if !existing || pending < 0 || pending == isb.PendingNotAvailable {
 				backend.Logger.Debug("pending not available for vertex", "namespace", queryNamespace, "pipeline", queryPipeline, "vertex", vertices[i].Spec.Name)
 			} else {
-				pendingMessages[i] = pending
+				pendingMessages[i] = pointer.Int64(pending)
 			}
 		}
 		vWatermark, err := nfClient.GetVertexWatermark(queryNamespace, queryPipeline, vertices[i].Spec.Name)
@@ -153,7 +156,32 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 			backend.Logger.Error("failed to retrieve watermark for vertex", "namespace", queryNamespace, "pipeline", queryPipeline, "vertex", vertices[i].Spec.Name)
 		} else {
 			if vWatermark.Watermark != nil {
-				watermark[i] = time.UnixMilli(*vWatermark.Watermark)
+				t := time.UnixMilli(*vWatermark.Watermark)
+				watermark[i] = &t
+			}
+		}
+		pods, err := nfClient.ListVertexPods(queryNamespace, queryPipeline, vertices[i].Spec.Name)
+		if err != nil {
+			backend.Logger.Error("failed to retrieve pods for vertex", "namespace", queryNamespace, "pipeline", queryPipeline, "vertex", vertices[i].Spec.Name)
+		} else {
+			pCpu := int64(0)
+			pMemory := int64(0)
+			for pi := range pods {
+				pMetrics, err := nfClient.GetPodMetrics(queryNamespace, pods[pi].Name)
+				if err != nil {
+					backend.Logger.Error("failed to retrieve pod metrics for pod", "namespace", queryNamespace, "pod", pods[pi].Name)
+					pCpu = int64(0)
+					pMemory = int64(0)
+					break
+				}
+				for _, c := range pMetrics.Containers {
+					pCpu += c.Usage.Cpu().MilliValue()
+					pMemory += c.Usage.Memory().ScaledValue(6)
+				}
+			}
+			if pCpu != int64(0) && pMemory != int64(0) {
+				cpuUsage[i] = &pCpu
+				memoryUsage[i] = &pMemory
 			}
 		}
 		creationTime[i] = vertices[i].CreationTimestamp.Time
@@ -170,6 +198,8 @@ func newVertexTableFrames(nfClient *NFClients, query models.RunnableQuery) (data
 		data.NewField("processing rate", nil, processingRate),
 		data.NewField("pending messages", nil, pendingMessages),
 		data.NewField("watermark", nil, watermark),
+		data.NewField("cpu usage", nil, cpuUsage),
+		data.NewField("memory usage", nil, memoryUsage),
 		data.NewField("creation time", nil, creationTime),
 	}
 	return data.Frames{data.NewFrame("vertices", fields...)}, nil
