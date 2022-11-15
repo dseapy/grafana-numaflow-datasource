@@ -37,7 +37,7 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
    ```bash
    # Runs the tests and watches for changes
    yarn test
-   
+
    # Exists after running all the tests
    yarn lint:ci
    ```
@@ -51,9 +51,9 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
 6. Run the E2E tests (using Cypress)
 
    ```bash
-   # Spin up a Grafana instance first that we tests against 
+   # Spin up a Grafana instance first that we tests against
    yarn server
-   
+
    # Start the tests
    yarn e2e
    ```
@@ -62,7 +62,7 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
 
    ```bash
    yarn lint
-   
+
    # or
 
    yarn lint:fix
