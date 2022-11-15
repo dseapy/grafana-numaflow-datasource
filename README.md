@@ -1,17 +1,98 @@
-# Grafana Data Source Plugin for Numaflow
+# Grafana data source plugin template
 
-[Grafana data source plugin](https://grafana.com/tutorials/build-a-data-source-plugin/) for [Numaflow](https://github.com/numaproj/numaflow). 
+This template is a starting point for building a Data Source Plugin for Grafana.
 
-* Use [Prometheus data source](https://grafana.com/docs/grafana/latest/datasources/prometheus/) for the time-series metrics. See Numaflow's [metrics.md](https://github.com/numaproj/numaflow/blob/main/docs/metrics/metrics.md).
-* Use a Grafana logging data source (i.e. [Loki](https://grafana.com/docs/grafana/latest/datasources/loki/), [ElasticSearch](https://grafana.com/docs/grafana/latest/datasources/elasticsearch/)) for the container logs.
-* Use this data source for metadata that can't easily be retrieved from existing grafana data sources, such as `edge` & `vertex` metadata available in a [Pipeline](https://github.com/numaproj/numaflow/blob/main/docs/pipeline.md) Kubernetes custom resource.
+## What are Grafana data source plugins?
 
-**Disclaimers**:
-* **Proof-of-concept**, not an official plugin, not affiliated with numaflow
-* Grafana's [node graph panel](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/node-graph/) is in beta
-* Plugin currently depends directly on core numaflow code and not on any official SDKs/APIs/Clients
+Grafana supports a wide range of data sources, including Prometheus, MySQL, and even Datadog. There’s a good chance you can already visualize metrics from the systems you have set up. In some cases, though, you already have an in-house metrics solution that you’d like to add to your Grafana dashboards. Grafana Data Source Plugins enables integrating such solutions with Grafana.
 
-## Resources
+## Getting started
 
-- [QUICK_START](docs/quick-start.md)
-- [DEVELOPMENT](docs/development.md)
+### Frontend
+
+1. Install dependencies
+
+   ```bash
+   yarn install
+   ```
+
+2. Build plugin in development mode or run in watch mode
+
+   ```bash
+   yarn dev
+
+   # or
+
+   yarn watch
+   ```
+
+3. Build plugin in production mode
+
+   ```bash
+   yarn build
+   ```
+
+4. Run the tests (using Jest)
+
+   ```bash
+   # Runs the tests and watches for changes
+   yarn test
+   
+   # Exists after running all the tests
+   yarn lint:ci
+   ```
+
+5. Spin up a Grafana instance and run the plugin inside it (using Docker)
+
+   ```bash
+   yarn server
+   ```
+
+6. Run the E2E tests (using Cypress)
+
+   ```bash
+   # Spin up a Grafana instance first that we tests against 
+   yarn server
+   
+   # Start the tests
+   yarn e2e
+   ```
+
+7. Run the linter
+
+   ```bash
+   yarn lint
+   
+   # or
+
+   yarn lint:fix
+   ```
+
+### Backend
+
+1. Update [Grafana plugin SDK for Go](https://grafana.com/docs/grafana/latest/developers/plugins/backend/grafana-plugin-sdk-for-go/) dependency to the latest minor version:
+
+   ```bash
+   go get -u github.com/grafana/grafana-plugin-sdk-go
+   go mod tidy
+   ```
+
+2. Build backend plugin binaries for Linux, Windows and Darwin:
+
+   ```bash
+   mage -v
+   ```
+
+3. List all available Mage targets for additional commands:
+
+   ```bash
+   mage -l
+   ```
+
+## Learn more
+
+Below you can find source code for existing app plugins and other related documentation.
+
+- [Basic data source plugin example](https://github.com/grafana/grafana-plugin-examples/tree/master/examples/datasource-basic#readme)
+- [Plugin.json documentation](https://grafana.com/docs/grafana/latest/developers/plugins/metadata/)
+- [How to sign a plugin?](https://grafana.com/docs/grafana/latest/developers/plugins/sign-a-plugin/)

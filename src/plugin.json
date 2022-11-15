@@ -2,20 +2,20 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "Numaflow",
-  "id": "grafana-numaflow-datasource",
+  "id": "numaflow-datasource",
   "metrics": true,
   "backend": true,
   "alerting": true,
   "executable": "gpx_numaflow_datasource",
   "info": {
-    "description": "Kubernetes-native tool for running massively parallel stream processing",
+    "description": "Datasource plugin for Numaflow",
     "author": {
       "name": "David Seapy"
     },
     "keywords": ["datasource"],
     "logos": {
-      "small": "img/logo.svg",
-      "large": "img/logo.svg"
+      "small": "img/numaflow-logo.svg",
+      "large": "img/numaflow-logo.svg"
     },
     "links": [
       {
@@ -24,7 +24,7 @@
       },
       {
         "name": "License",
-        "url": "https://github.com/dseapy/grafana-numaflow-datasource/blob/main/LICENSE"
+        "url": "https://github.com/grafana/grafana-starter-datasource/blob/master/LICENSE"
       }
     ],
     "screenshots": [],
@@ -32,7 +32,7 @@
     "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaDependency": ">=9.1.2",
+    "grafanaDependency": "^9.1.2",
     "plugins": []
   }
 }

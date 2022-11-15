@@ -84,18 +84,23 @@ We are going to use [`webpack-merge`](https://github.com/survivejs/webpack-merge
 
 ```typescript
 // webpack.config.ts
+import type { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import grafanaConfig from './.config/webpack/webpack.config';
 
-const config = (env) =>
-    merge(grafanaConfig(env), {
-        // Add custom config here...
-        output: {
-            asyncChunks: true,
-        },
-    });
+const config = async (env): Promise<Configuration> => {
+  const baseConfig = await grafanaConfig(env);
+
+  return merge(baseConfig, {
+    // Add custom config here...
+    output: {
+      asyncChunks: true,
+    },
+  });
+};
 
 export default config;
+
 ```
 
 #### 3. Update the `package.json` to use the new Webpack config
@@ -104,12 +109,12 @@ We need to update the `scripts` in the `package.json` to use the extended Webpac
 
 **Update for `build`:**
 ```diff
--"build": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -c ./.config/webpack/webpack.config.ts --env production",
-+"build": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -c ./webpack.config.ts --env production",
+-"build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
++"build": "webpack -c ./webpack.config.ts --env production",
 ```
 
 **Update for `dev`:**
 ```diff
--"dev": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -w -c ./.config/webpack/webpack.config.ts --env development",
-+"dev": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -w -c ./webpack.config.ts --env development",
+-"dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
++"dev": "webpack -w -c ./webpack.config.ts --env development",
 ```
