@@ -1,4 +1,4 @@
-package models
+package plugin
 
 import (
 	"encoding/json"
@@ -7,13 +7,13 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
 
-type PluginSettings struct {
+type Settings struct {
 	Namespaced bool   `json:"namespaced"`
 	Namespace  string `json:"namespace"`
 }
 
-func LoadPluginSettings(source backend.DataSourceInstanceSettings) (*PluginSettings, error) {
-	settings := PluginSettings{
+func loadSettings(source backend.DataSourceInstanceSettings) (*Settings, error) {
+	settings := Settings{
 		Namespaced: false,
 		Namespace:  "default",
 	}
@@ -25,7 +25,7 @@ func LoadPluginSettings(source backend.DataSourceInstanceSettings) (*PluginSetti
 
 	err := json.Unmarshal(source.JSONData, &settings)
 	if err != nil {
-		return nil, fmt.Errorf("could not unmarshal PluginSettings json: %w", err)
+		return nil, fmt.Errorf("could not unmarshal Settings json: %w", err)
 	}
 	backend.Logger.Debug("Successfully parsed settings", "namespaced", settings.Namespaced, "namespace", settings.Namespace)
 

@@ -1,4 +1,4 @@
-package query
+package client
 
 // This file is based on "handler.go" in numaflow server, duplicated
 // because fields aren't exported to be used outside of server package
@@ -29,9 +29,10 @@ type Client struct {
 	metricsClient  *metricsversiond.Clientset
 	numaflowClient dfv1clients.NumaflowV1alpha1Interface
 	listOptions    metav1.ListOptions
+	namespace      string
 }
 
-func NewClient() (*Client, error) {
+func NewClient(namespace string) (*Client, error) {
 	var restConfig *rest.Config
 	var err error
 	kubeconfig := os.Getenv("KUBECONFIG")
@@ -62,11 +63,12 @@ func NewClient() (*Client, error) {
 		numaflowClient: numaflowClient,
 		// for now hard-code default limit, in future can allow overriding in data source or in each data query
 		listOptions: metav1.ListOptions{Limit: 1000},
+		namespace:   namespace,
 	}, nil
 }
 
-func (c *Client) ListNamespacesWithPipelines(ns string) ([]string, error) {
-	l, err := c.numaflowClient.Pipelines(ns).List(context.Background(), c.listOptions)
+func (c *Client) ListNamespacesWithPipelines() ([]string, error) {
+	l, err := c.numaflowClient.Pipelines(c.namespace).List(context.Background(), c.listOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -81,8 +83,8 @@ func (c *Client) ListNamespacesWithPipelines(ns string) ([]string, error) {
 	return namespaces, nil
 }
 
-func (c *Client) ListNamespacesWithVertices(ns string) ([]string, error) {
-	l, err := c.numaflowClient.Vertices(ns).List(context.Background(), c.listOptions)
+func (c *Client) ListNamespacesWithVertices() ([]string, error) {
+	l, err := c.numaflowClient.Vertices(c.namespace).List(context.Background(), c.listOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +99,8 @@ func (c *Client) ListNamespacesWithVertices(ns string) ([]string, error) {
 	return namespaces, nil
 }
 
-func (c *Client) ListNamespacesWithInterStepBufferServices(ns string) ([]string, error) {
-	l, err := c.numaflowClient.InterStepBufferServices(ns).List(context.Background(), c.listOptions)
+func (c *Client) ListNamespacesWithInterStepBufferServices() ([]string, error) {
+	l, err := c.numaflowClient.InterStepBufferServices(c.namespace).List(context.Background(), c.listOptions)
 	if err != nil {
 		return nil, err
 	}
