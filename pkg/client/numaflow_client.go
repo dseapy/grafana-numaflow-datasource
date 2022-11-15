@@ -188,6 +188,16 @@ func (c *Client) ListVertexPods(ns, pipeline, vertex string) ([]v1.Pod, error) {
 	return pods.Items, err
 }
 
+func (c *Client) ListInterStepBufferServicePods(ns, isbsvc string) ([]v1.Pod, error) {
+	lo := c.listOptions.DeepCopy()
+	lo.LabelSelector = fmt.Sprintf("%s=%s", dfv1.KeyISBSvcName, isbsvc)
+	pods, err := c.kubeClient.CoreV1().Pods(ns).List(context.Background(), *lo)
+	if err != nil {
+		return nil, err
+	}
+	return pods.Items, err
+}
+
 func (c *Client) ListPodsMetrics(ns string) ([]v1beta1.PodMetrics, error) {
 	l, err := c.metricsClient.MetricsV1beta1().PodMetricses(ns).List(context.Background(), c.listOptions)
 	if err != nil {

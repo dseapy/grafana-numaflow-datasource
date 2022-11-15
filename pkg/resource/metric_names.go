@@ -94,15 +94,15 @@ func getResourcesInNamespace(q *query.Query, c *client.Client) (*metricNames, er
 		}
 		mn.MetricNames = pipelineNamesInNamespace
 	case query.VertexResourceType:
-		verticesInNamespace, err := c.ListPipelineVertices(*q.RunnableQuery.Namespace, *q.RunnableQuery.Pipeline)
+		verticesInPipeline, err := c.ListPipelineVertices(*q.RunnableQuery.Namespace, *q.RunnableQuery.Pipeline)
 		if err != nil {
 			return nil, err
 		}
-		vertexNamesInNamespace := make([]string, len(verticesInNamespace))
-		for i := range verticesInNamespace {
-			vertexNamesInNamespace[i] = verticesInNamespace[i].Labels[dfv1.KeyVertexName]
+		vertexNamesInPipeline := make([]string, len(verticesInPipeline))
+		for i := range verticesInPipeline {
+			vertexNamesInPipeline[i] = verticesInPipeline[i].Labels[dfv1.KeyVertexName]
 		}
-		mn.MetricNames = vertexNamesInNamespace
+		mn.MetricNames = vertexNamesInPipeline
 	case query.IsbsvcResourceType:
 		isbsvcsInNamespace, err := c.ListInterStepBufferServices(*q.RunnableQuery.Namespace)
 		if err != nil {
@@ -113,6 +113,22 @@ func getResourcesInNamespace(q *query.Query, c *client.Client) (*metricNames, er
 			isbsvcNamesInNamespace[i] = isbsvcsInNamespace[i].Name
 		}
 		mn.MetricNames = isbsvcNamesInNamespace
+	case query.PodResourceType:
+		if q.RunnableQuery.Vertex != nil {
+			podsInIsbsvc, err := c.ListVertexPods(*q.RunnableQuery.Namespace, *q.RunnableQuery.Pipeline, *q.RunnableQuery.Vertex)
+			if err != nil {
+				return nil, err
+			}
+			podNamesInIsbsvc := make([]string, len(podsInIsbsvc))
+			for i := range podsInIsbsvc {
+				podNamesInIsbsvc[i] = podsInIsbsvc[i].Name
+			}
+			mn.MetricNames = podNamesInIsbsvc
+		} else if q.RunnableQuery.InterStepBufferService != nil {
+
+		} else {
+			return nil, errors.New(fmt.Sprintf("vertex or isbsvc must be provided when requesting pods"))
+		}
 	default:
 		return nil, errors.New(fmt.Sprintf("error listing namespaces, resource type unknown, %v", q.RunnableQuery.ResourceType))
 	}

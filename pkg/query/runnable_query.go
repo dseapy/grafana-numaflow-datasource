@@ -10,12 +10,13 @@ import (
 RunnableQuery describes what data should be returned by the backend.
 
 if "vertex" exists, "pipeline" must exist.
+if "pod" exists, "vertex" or "isbsvc" must exist.
 
 DATA_QUERY
 ----------
-For all pipelines all namespaces: {"namespace":"","pipeline":"*"}
-For all vertices all pipelines: {"namespace":"","pipeline":"","vertex":"*"}
-For all isbsvcs all namespace: {"namespace":"","isbsvc":"*"}
+For all pipelines in all namespaces: {"namespace":"","pipeline":"*"}
+For all vertices in all pipelines: {"namespace":"","pipeline":"","vertex":"*"}
+For all isbsvcs in all namespaces: {"namespace":"","isbsvc":"*"}
 For all pipelines in namespace: {"namespace":"$namespace","pipeline":"*"}
 For all vertices in namespace: {"namespace":"$namespace","pipeline":"","vertex":"*"}
 For all vertices in pipeline: {"namespace":"$namespace","pipeline":"my-pl","vertex":"*"}
@@ -29,6 +30,8 @@ METRIC_NAME_QUERY
 For all pipelines in namespace: {"namespace":"$namespace","pipeline":"*"}
 For all vertices in namespace: {"namespace":"$namespace","pipeline":"","vertex":"*"}
 For all vertices in pipeline: {"namespace":"$namespace","pipeline":"$pipeline","vertex":"*"}
+For all pods in vertex: {"namespace":"$namespace","pipeline":"$pipeline","vertex":"$vertex","pod":"*"}
+For all pods in isbsvc: {"namespace":"$namespace","isbsvc":"$isbsvc","pod":"*"}
 For all isbsvcs in namespace: {"namespace":"$namespace","isbsvc":"*"}
 For all namespaces containing pipelines: {"namespace":"*","pipeline":""}
 For all namespaces containing vertices: {"namespace":"*","pipeline":"","vertex":""}
@@ -38,6 +41,7 @@ type RunnableQuery struct {
 	Namespace              *string      `json:"namespace,omitempty"`
 	Pipeline               *string      `json:"pipeline,omitempty"`
 	Vertex                 *string      `json:"vertex,omitempty"`
+	Pod                    *string      `json:"pod,omitempty"`
 	InterStepBufferService *string      `json:"isbsvc,omitempty"`
 	ResourceType           ResourceType `json:"-"`
 	ResourceName           string       `json:"-"`

@@ -15,6 +15,7 @@ type ResourceType string
 const (
 	PipelineResourceType ResourceType = "pipeline"
 	VertexResourceType   ResourceType = "vertex"
+	PodResourceType      ResourceType = "pod"
 	IsbsvcResourceType   ResourceType = "isbsvc"
 )
 
@@ -28,15 +29,25 @@ func (q *Query) Unmarshall(b []byte) error {
 
 	if q.RunnableQuery.Pipeline != nil {
 		if q.RunnableQuery.Vertex != nil {
-			q.RunnableQuery.ResourceName = *q.RunnableQuery.Vertex
-			q.RunnableQuery.ResourceType = VertexResourceType
+			if q.RunnableQuery.Pod != nil {
+				q.RunnableQuery.ResourceName = *q.RunnableQuery.Pod
+				q.RunnableQuery.ResourceType = PodResourceType
+			} else {
+				q.RunnableQuery.ResourceName = *q.RunnableQuery.Vertex
+				q.RunnableQuery.ResourceType = VertexResourceType
+			}
 		} else {
 			q.RunnableQuery.ResourceName = *q.RunnableQuery.Pipeline
 			q.RunnableQuery.ResourceType = PipelineResourceType
 		}
 	} else if q.RunnableQuery.InterStepBufferService != nil {
-		q.RunnableQuery.ResourceName = *q.RunnableQuery.InterStepBufferService
-		q.RunnableQuery.ResourceType = IsbsvcResourceType
+		if q.RunnableQuery.Pod != nil {
+			q.RunnableQuery.ResourceName = *q.RunnableQuery.Pod
+			q.RunnableQuery.ResourceType = PodResourceType
+		} else {
+			q.RunnableQuery.ResourceName = *q.RunnableQuery.InterStepBufferService
+			q.RunnableQuery.ResourceType = IsbsvcResourceType
+		}
 	} else {
 		// TODO: better error reporting
 		return errors.New("cannot unmarshal json")
