@@ -52,9 +52,6 @@ extraInitContainers:
   volumeMounts:
   - name: plugins
     mountPath: /plugins
-extraContainerVolumes:
-- name: plugins
-  emptyDir: {}
 extraVolumeMounts:
 - name: plugins
   mountPath: /var/lib/grafana/plugins
