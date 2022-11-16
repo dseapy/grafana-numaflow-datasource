@@ -8,8 +8,8 @@ Supports viewing Numaflow metadata & metrics that come from the following source
 * Kubernetes Metrics API
 
 Supports the following Grafana panels:
-* Table
-* Node Graph (Only supported when querying for a single `Pipeline`)
+* [Table](https://grafana.com/docs/grafana/v9.0/visualizations/table/)
+* [Node Graph](https://grafana.com/docs/grafana/v9.0/visualizations/node-graph/) (Only supported when querying for a single `Pipeline`)
 
 **Still a proof-of-concept** - code rushed, no unit tests, etc.
 
@@ -98,7 +98,10 @@ TODO
 
 ## Queries
 
-### Metric Name Queries (Grafana variables)
+The following assumes you are using variables `$namespace`, `$pipeline`, `$vertex`, `$isbsvc` in grafana.
+Replace with other values (i.e. `my-namespace`) if not using Grafana variables.
+
+### Metric Name Queries (for Grafana variables)
 All pipelines in namespace:
 ```json
 {"namespace":"$namespace","pipeline":"*"}
@@ -136,7 +139,7 @@ All namespaces containing isbsvcs
 {"namespace":"*","isbsvc":""}
 ```
 
-### Data Queries (Table and NodeGraph panels)
+### Data Queries (for Table and NodeGraph panels)
 All pipelines in all namespaces:
 ```json
 {"namespace":"","pipeline":"*"}
@@ -159,7 +162,7 @@ All vertices in namespace
 ```
 All vertices in pipeline
 ```json
-{"namespace":"$namespace","pipeline":"my-pl","vertex":"*"}
+{"namespace":"$namespace","pipeline":"$pipeline","vertex":"*"}
 ```
 All isbsvcs in namespace
 ```json
@@ -167,13 +170,13 @@ All isbsvcs in namespace
 ```
 A single pipeline
 ```json
-{"namespace":"$namespace","pipeline":"my-pl"}
+{"namespace":"$namespace","pipeline":"$pipeline"}
 ```
 A single vertex
 ```json
-{"namespace":"$namespace","pipeline":"my-pl","vertex":"my-vertex"}
+{"namespace":"$namespace","pipeline":"$pipeline","vertex":"$vertex"}
 ```
 A single isbsvc
 ```json
-{"namespace":"$namespace","isbsvc":"my-isbsvc"}
+{"namespace":"$namespace","isbsvc":"$isbsvc"}
 ```
