@@ -1,6 +1,6 @@
-# Grafana Backend Datasource Plugin
+# Grafana Numaflow Datasource Plugin
 
-A [backend data source plugin](https://grafana.com/tutorials/build-a-data-source-backend-plugin/) for Grafana
+A Numaflow [backend data source plugin](https://grafana.com/tutorials/build-a-data-source-backend-plugin/) for Grafana
 
 Supports viewing Numaflow metadata & metrics that come from the following sources:
 * Kubernetes Cluster Resources (i.e. `Pipeline`, `Vertex`, `InterStepBufferService`)
