@@ -58,50 +58,51 @@ extraContainerVolumes:
 extraVolumeMounts:
 - name: plugins
   mountPath: /var/lib/grafana/plugins
-extraClusterRoleRules:
-- apiGroups:
-  - numaflow.numaproj.io
-  resources:
-  - interstepbufferservices
-  - interstepbufferservices/finalizers
-  - interstepbufferservices/status
-  - pipelines
-  - pipelines/finalizers
-  - pipelines/status
-  - vertices
-  - vertices/finalizers
-  - vertices/status
-  - vertices/scale
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - services
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  - statefulsets
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - metrics.k8s.io
-  resources:
-  - pods
-  verbs:
-  - get
-  - list
-  - watch
+rbac:
+  extraClusterRoleRules:
+  - apiGroups:
+    - numaflow.numaproj.io
+    resources:
+    - interstepbufferservices
+    - interstepbufferservices/finalizers
+    - interstepbufferservices/status
+    - pipelines
+    - pipelines/finalizers
+    - pipelines/status
+    - vertices
+    - vertices/finalizers
+    - vertices/status
+    - vertices/scale
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - services
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    - statefulsets
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - metrics.k8s.io
+    resources:
+    - pods
+    verbs:
+    - get
+    - list
+    - watch
 sidecar:
   resources:
     limits:
