@@ -1,9 +1,17 @@
 # Grafana Backend Datasource Plugin
 
-The following assumes you are using the [Grafana Helm Chart](https://github.com/grafana/helm-charts/tree/main/charts/grafana)
-either directly or indirectly (i.e. [Kube Prometheus Stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
+A [backend data source plugin](https://grafana.com/tutorials/build-a-data-source-backend-plugin/) for Grafana
 
-If installing Grafana through some other means, the process should be similar.
+Supports viewing Numaflow metadata & metrics that come from the following sources:
+* Kubernetes Cluster Resources (i.e. `Pipeline`, `Vertex`, `InterStepBufferService`)
+* Numaflow Daemon Services
+* Kubernetes Metrics API
+
+Supports the following Grafana panels:
+* Table
+* Node Graph (Only supported when querying for a single `Pipeline`)
+
+**Still a proof-of-concept** - code rushed, no unit tests, etc.
 
 ## Build
 ```shell
@@ -11,7 +19,14 @@ docker build -t <my-container-registry>/grafana-numaflow-datasource:latest .
 docker push <my-container-registry>/grafana-numaflow-datasource:latest
 ```
 
-## Configure Grafana
+## Install
+
+The following assumes you are using the [Grafana Helm Chart](https://github.com/grafana/helm-charts/tree/main/charts/grafana)
+either directly or indirectly (i.e. [Kube Prometheus Stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
+
+If installing Grafana through some other means, the process should be similar.
+
+### Grafana
 
 Add the following helm overrides to your Grafana installation.
 
@@ -55,7 +70,7 @@ sidecar:
     searchNamespace: ALL
 ```
 
-## Configure Datasource
+### Datasource
 
 Add the following `ConfigMap` to your Numaflow installation.
 
@@ -77,6 +92,88 @@ data:
           namespaced: false
 ```
 
-## Configure Dashboards
+### Dashboards
 
 TODO
+
+## Queries
+
+### Metric Name Queries (Grafana variables)
+All pipelines in namespace:
+```json
+{"namespace":"$namespace","pipeline":"*"}
+```
+All vertices in namespace
+```json
+{"namespace":"$namespace","pipeline":"","vertex":"*"}
+```
+All vertices in pipeline
+```json
+{"namespace":"$namespace","pipeline":"$pipeline","vertex":"*"}
+```
+All pods in vertex
+```json
+{"namespace":"$namespace","pipeline":"$pipeline","vertex":"$vertex","pod":"*"}
+```
+All pods in isbsvc
+```json
+{"namespace":"$namespace","isbsvc":"$isbsvc","pod":"*"}
+```
+All isbsvcs in namespace
+```json
+{"namespace":"$namespace","isbsvc":"*"}
+```
+All namespaces containing pipelines
+```json
+{"namespace":"*","pipeline":""}
+```
+All namespaces containing vertices
+```json
+{"namespace":"*","pipeline":"","vertex":""}
+```
+All namespaces containing isbsvcs
+```json
+{"namespace":"*","isbsvc":""}
+```
+
+### Data Queries (Table and NodeGraph panels)
+All pipelines in all namespaces:
+```json
+{"namespace":"","pipeline":"*"}
+```
+All vertices in all pipelines:
+```json
+{"namespace":"","pipeline":"","vertex":"*"}
+```
+All isbsvcs in all namespaces
+```json
+{"namespace":"","isbsvc":"*"}
+```
+All pipelines in namespace
+```json
+{"namespace":"$namespace","pipeline":"*"}
+```
+All vertices in namespace
+```json
+{"namespace":"$namespace","pipeline":"","vertex":"*"}
+```
+All vertices in pipeline
+```json
+{"namespace":"$namespace","pipeline":"my-pl","vertex":"*"}
+```
+All isbsvcs in namespace
+```json
+{"namespace":"$namespace","isbsvc":"*"}
+```
+A single pipeline
+```json
+{"namespace":"$namespace","pipeline":"my-pl"}
+```
+A single vertex
+```json
+{"namespace":"$namespace","pipeline":"my-pl","vertex":"my-vertex"}
+```
+A single isbsvc
+```json
+{"namespace":"$namespace","isbsvc":"my-isbsvc"}
+```
