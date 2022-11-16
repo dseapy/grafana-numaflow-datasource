@@ -13,6 +13,8 @@ Supports the following Grafana panels:
 
 **Still a proof-of-concept** - code rushed, no unit tests, etc.
 
+Read more here: https://medium.com/@dseapy/monitoring-stream-processing-in-a-kubernetes-native-environment-9f8f68e82346
+
 ## Build
 ```shell
 docker build -t <my-container-registry>/grafana-numaflow-datasource:latest .
@@ -101,7 +103,7 @@ TODO
 The following assumes you are using variables `$namespace`, `$pipeline`, `$vertex`, `$isbsvc` in grafana.
 Replace with other values (i.e. `my-namespace`) if not using Grafana variables.
 
-### Metric Name Queries (for Grafana variables)
+### Metric Names (for variables)
 All pipelines in namespace:
 ```json
 {"namespace":"$namespace","pipeline":"*"}
@@ -139,7 +141,7 @@ All namespaces containing isbsvcs
 {"namespace":"*","isbsvc":""}
 ```
 
-### Data Queries (for Table and NodeGraph panels)
+### Data (for Table and NodeGraph panels)
 All pipelines in all namespaces:
 ```json
 {"namespace":"","pipeline":"*"}
