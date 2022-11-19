@@ -336,8 +336,8 @@ github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f/go.mod h1:qRW
 github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f/go.mod h1:ZdcZmHo+o7JKHSa8/e818NopupXU1YMK5fe1lsApnBw=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
-github.com/numaproj/numaflow v0.6.2 h1:/1G7lSBJYeSsgCvK4kZymTlbuUTxOMtlJpVkiBt7nQk=
-github.com/numaproj/numaflow v0.6.2/go.mod h1:lnbWX30QTa1EhHIr2w6HAm1veLRFEX3kKPeu0jKSLhU=
+github.com/numaproj/numaflow v0.6.3 h1:TdV6pxQynoEs0iSde3UyWeIwwTYqItVYCD+rb5TYl0A=
+github.com/numaproj/numaflow v0.6.3/go.mod h1:lXooWo9FsPsEDUmuAaAwO5cG8YIrXYIcSMpJcJDeIOs=
 github.com/nxadm/tail v1.4.4 h1:DQuhQpB1tVlglWS2hLQ5OV6B5r8aGxSrPc5Qo6uTN78=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=
 github.com/oklog/run v1.0.0 h1:Ru7dDtJNOyC66gQ5dQmaCa0qIsAUFY3sFpK1Xk8igrw=
