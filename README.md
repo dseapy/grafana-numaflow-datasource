@@ -129,11 +129,11 @@ data:
   datasource.yaml: |-
     apiVersion: 1
     datasources:
-      - name: Numaflow
-        type: numaflow-datasource
-        uid: numaflow
-        jsonData:
-          namespaced: false
+    - name: Numaflow
+      type: numaflow-datasource
+      uid: numaflow
+      jsonData:
+        namespaced: false
 ```
 
 ### Dashboards
